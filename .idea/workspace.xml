@@ -14,7 +14,7 @@
   <component name="ChangeListManager">
     <list default="true" id="3001ee7c-2b66-450d-bb56-ea9dbde155de" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,7 +105,7 @@
       <option name="presentableId" value="Default" />
       <updated>1620579641826</updated>
       <workItem from="1620579643414" duration="626000" />
-      <workItem from="1620588928518" duration="79000" />
+      <workItem from="1620588928518" duration="819000" />
     </task>
     <servers />
   </component>
@@ -113,25 +113,29 @@
     <option name="version" value="3" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1398" height="203" key="GridCell.Tab.0.bottom" timestamp="1620580301138">
-      <screen x="1440" y="-35" width="1920" height="1055" />
+    <state width="1398" height="203" key="GridCell.Tab.0.bottom" timestamp="1620589764517">
+      <screen x="0" y="25" width="1440" height="801" />
     </state>
     <state width="1398" height="203" key="GridCell.Tab.0.bottom/0.25.1440.799/1440.-35.1920.1055@1440.-35.1920.1055" timestamp="1620579868373" />
     <state width="1398" height="203" key="GridCell.Tab.0.bottom/0.25.1440.801/1440.-35.1920.1055@1440.-35.1920.1055" timestamp="1620580301138" />
-    <state width="1398" height="203" key="GridCell.Tab.0.center" timestamp="1620580301137">
-      <screen x="1440" y="-35" width="1920" height="1055" />
+    <state width="1398" height="203" key="GridCell.Tab.0.bottom/0.25.1440.801@0.25.1440.801" timestamp="1620589764517" />
+    <state width="1398" height="203" key="GridCell.Tab.0.center" timestamp="1620589764516">
+      <screen x="0" y="25" width="1440" height="801" />
     </state>
     <state width="1398" height="203" key="GridCell.Tab.0.center/0.25.1440.799/1440.-35.1920.1055@1440.-35.1920.1055" timestamp="1620579868373" />
     <state width="1398" height="203" key="GridCell.Tab.0.center/0.25.1440.801/1440.-35.1920.1055@1440.-35.1920.1055" timestamp="1620580301137" />
-    <state width="1398" height="203" key="GridCell.Tab.0.left" timestamp="1620580301136">
-      <screen x="1440" y="-35" width="1920" height="1055" />
+    <state width="1398" height="203" key="GridCell.Tab.0.center/0.25.1440.801@0.25.1440.801" timestamp="1620589764516" />
+    <state width="1398" height="203" key="GridCell.Tab.0.left" timestamp="1620589764516">
+      <screen x="0" y="25" width="1440" height="801" />
     </state>
     <state width="1398" height="203" key="GridCell.Tab.0.left/0.25.1440.799/1440.-35.1920.1055@1440.-35.1920.1055" timestamp="1620579868372" />
     <state width="1398" height="203" key="GridCell.Tab.0.left/0.25.1440.801/1440.-35.1920.1055@1440.-35.1920.1055" timestamp="1620580301136" />
-    <state width="1398" height="203" key="GridCell.Tab.0.right" timestamp="1620580301138">
-      <screen x="1440" y="-35" width="1920" height="1055" />
+    <state width="1398" height="203" key="GridCell.Tab.0.left/0.25.1440.801@0.25.1440.801" timestamp="1620589764516" />
+    <state width="1398" height="203" key="GridCell.Tab.0.right" timestamp="1620589764516">
+      <screen x="0" y="25" width="1440" height="801" />
     </state>
     <state width="1398" height="203" key="GridCell.Tab.0.right/0.25.1440.799/1440.-35.1920.1055@1440.-35.1920.1055" timestamp="1620579868373" />
     <state width="1398" height="203" key="GridCell.Tab.0.right/0.25.1440.801/1440.-35.1920.1055@1440.-35.1920.1055" timestamp="1620580301138" />
+    <state width="1398" height="203" key="GridCell.Tab.0.right/0.25.1440.801@0.25.1440.801" timestamp="1620589764516" />
   </component>
 </project>
