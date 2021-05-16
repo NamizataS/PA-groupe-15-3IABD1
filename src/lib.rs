@@ -1,7 +1,101 @@
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
+use rand::Rng;
+use std::slice::{from_raw_parts, from_raw_parts_mut};
+use ndarray::prelude::*;
+
+
+#[no_mangle]
+pub extern "C" fn create_model(x: i32) -> *mut f64{
+    let mut rng = rand::thread_rng();
+    let mut model = Vec::with_capacity(x as usize);
+    let mut num = rng.gen();
+    for _ in 0..x{
+        num = num * 2.0 - 1.0;
+        model.push(num);
+    }
+    let boxed_slice = model.into_boxed_slice();
+    let model_ref = Box::leak(boxed_slice);
+    model_ref.as_mut_ptr()
+}
+
+#[no_mangle]
+pub extern "C" fn predict_linear_model_regression(model: *const f64, inputs: *const f64, model_size: i32, inputs_size: i32) -> f64{
+    let model = unsafe{
+        from_raw_parts(model, model_size as usize)
+    };
+    let inputs = unsafe{
+        from_raw_parts(inputs,inputs_size as usize)
+    };
+    let mut sum_rslt = model[0];
+    for i in 1..model.len(){
+        sum_rslt += model[i] * inputs[i-1];
+    }
+    sum_rslt
+}
+
+#[no_mangle]
+pub extern "C" fn predict_linear_model_classification(model: *const f64, inputs: *const f64, model_size: i32, input_size: i32) -> f32{
+    let pred = predict_linear_model_regression(model,inputs, model_size, input_size);
+    let rslt;
+    if pred >= 0.0{
+        rslt = 1.0;
+    } else{
+        rslt = -1.0;
+    }
+    rslt as f32 /* f64 doesn't work. Returns 0.0 in Python. Waiting for prof answer */
+
+}
+
+#[no_mangle]
+pub extern "C" fn train_rosenblatt_linear_model(model: *mut f64, dataset_inputs: *const f64, dataset_expected_outputs: *const f64, iterations_count: i32, alpha: f64, model_len: i32, inputs_len: i32, outputs_len: i32){
+    let mut rng = rand::thread_rng();
+    let mut model = unsafe{
+        from_raw_parts_mut(model, model_len as usize)
+    };
+    let dataset_inputs = unsafe{
+        from_raw_parts(dataset_inputs, inputs_len as usize)
+    };
+    let dataset_expected_outputs = unsafe{
+        from_raw_parts(dataset_expected_outputs, outputs_len as usize)
+    };
+    let model_len_usize = model_len as usize;
+    let sample_count = inputs_len / model_len;
+    let mut k = 0;
+    let mut Xk;
+    let mut yk = 0.0;
+    let mut gXk = 0.0;
+    for it in 0..iterations_count{
+        k = rng.gen_range(0..sample_count) as usize;
+        Xk = &dataset_inputs[k * model_len_usize..(k + 1) * model_len_usize];
+        yk = dataset_expected_outputs[k];
+        gXk = predict_linear_model_classification(model.as_ptr(), Xk.as_ptr(), model_len, inputs_len ) as f64;
+
+        model[0] += alpha * yk - gXk * 1.0;
+        for i in 1..model_len_usize{
+            model[i] += alpha * (yk - gXk) * Xk[i-1];
+        }
     }
 }
+
+#[no_mangle]
+pub extern "C" fn train_regression_linear_model(model: *mut f64, dataset_inputs: *const f64, dataset_expected_outputs: *const f64, model_len: i32, inputs_len: i32, outputs_len: i32){
+    let sample_count = inputs_len / model_len;
+    let dataset_inputs = unsafe{
+        from_raw_parts(dataset_inputs,inputs_len as usize)
+    };
+    let dataset_expected_outputs = unsafe{
+        from_raw_parts(dataset_expected_outputs, outputs_len as usize)
+    };
+    let mut X =  array![dataset_inputs];
+    let mut Y =  array![dataset_expected_outputs];
+
+    X = Array::from_shape_vec((sample_count,model_len),X)?;
+    let mut bias_fake_inputs = Array::ones((sample_count, 1));
+}
+
+#[no_mangle]
+pub extern "C" fn destroy_array(arr: *mut f64, arr_size: i32) {
+    unsafe {
+        let _ = Vec::from_raw_parts(arr, arr_size as usize, arr_size as usize);
+    }
+}
+
