@@ -5,5 +5,10 @@ authors = ["NamizataS <nsangare@icloud.com>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "rust_lib"
+crate-type = ["cdylib"]
 
 [dependencies]
+rand="0.8.3"
+libm = "0.2.1"
