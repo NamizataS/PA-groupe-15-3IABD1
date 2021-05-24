@@ -1,7 +1,8 @@
 use rand::Rng;
 use std::slice::{from_raw_parts, from_raw_parts_mut};
-use ndarray::prelude::*;
-
+use std::iter::FromIterator;
+use std::borrow::Borrow;
+use nalgebra::{DMatrix, Matrix};
 
 #[no_mangle]
 pub extern "C" fn create_model(x: i32) -> *mut f64{
@@ -77,19 +78,33 @@ pub extern "C" fn train_rosenblatt_linear_model(model: *mut f64, dataset_inputs:
 }
 
 #[no_mangle]
-pub extern "C" fn train_regression_linear_model(model: *mut f64, dataset_inputs: *const f64, dataset_expected_outputs: *const f64, model_len: i32, inputs_len: i32, outputs_len: i32){
-    let sample_count = inputs_len / model_len;
-    let dataset_inputs = unsafe{
-        from_raw_parts(dataset_inputs,inputs_len as usize)
-    };
-    let dataset_expected_outputs = unsafe{
-        from_raw_parts(dataset_expected_outputs, outputs_len as usize)
-    };
-    let mut X =  array![dataset_inputs];
-    let mut Y =  array![dataset_expected_outputs];
+pub extern "C" fn train_regression_linear_model(model: *mut f32, all_inputs: *const f32, all_expected_outputs: *const f32, sample_count: usize,input_dim: usize, output_dim: usize){
 
-    X = Array::from_shape_vec((sample_count,model_len),X)?;
-    let mut bias_fake_inputs = Array::ones((sample_count, 1));
+    let (all_inputs_slice, all_expected_outputs_slice) =
+        unsafe {
+            (from_raw_parts(all_inputs, sample_count * input_dim),
+             from_raw_parts(all_expected_outputs, sample_count * output_dim))
+        };
+
+    let mut model = unsafe{
+        from_raw_parts_mut(model, sample_count as usize)
+    };
+
+    let X = DMatrix::from_iterator(sample_count, input_dim, all_inputs_slice.iter().cloned());
+    let Y = DMatrix::from_iterator(sample_count, output_dim, all_expected_outputs_slice.iter().cloned());
+
+
+    let X = X.insert_columns(0, 1, 1.0);
+
+    let XtX = &X.transpose() * &X;
+
+    let XtXInv = XtX.cholesky().unwrap().inverse();
+
+    let W = (XtXInv * &X.transpose()) * Y;
+
+    for (i, row) in W.row_iter().enumerate() {
+        model[i] =W.row(i)[0];
+    }
 }
 
 #[no_mangle]
