@@ -5,7 +5,7 @@ use std::borrow::Borrow;
 use nalgebra::{DMatrix, Matrix};
 
 #[no_mangle]
-pub extern "C" fn create_model(x: i32) -> *mut f64{
+pub extern "C" fn create_model(x: i32) -> *mut f32{
     let mut rng = rand::thread_rng();
     let mut model = Vec::with_capacity(x as usize);
     let mut num = rng.gen();
@@ -19,7 +19,7 @@ pub extern "C" fn create_model(x: i32) -> *mut f64{
 }
 
 #[no_mangle]
-pub extern "C" fn predict_linear_model_regression(model: *const f64, inputs: *const f64, model_size: i32, inputs_size: i32) -> f64{
+pub extern "C" fn predict_linear_model_regression(model: *const f32, inputs: *const f32, model_size: i32, inputs_size: i32) -> f32{
     let model = unsafe{
         from_raw_parts(model, model_size as usize)
     };
@@ -34,7 +34,7 @@ pub extern "C" fn predict_linear_model_regression(model: *const f64, inputs: *co
 }
 
 #[no_mangle]
-pub extern "C" fn predict_linear_model_classification(model: *const f64, inputs: *const f64, model_size: i32, input_size: i32) -> f32{
+pub extern "C" fn predict_linear_model_classification(model: *const f32, inputs: *const f32, model_size: i32, input_size: i32) -> f32{
     let pred = predict_linear_model_regression(model,inputs, model_size, input_size);
     let rslt;
     if pred >= 0.0{
@@ -42,12 +42,12 @@ pub extern "C" fn predict_linear_model_classification(model: *const f64, inputs:
     } else{
         rslt = -1.0;
     }
-    rslt as f32 /* f64 doesn't work. Returns 0.0 in Python. Waiting for prof answer */
+    rslt as f32
 
 }
 
 #[no_mangle]
-pub extern "C" fn train_rosenblatt_linear_model(model: *mut f64, dataset_inputs: *const f64, dataset_expected_outputs: *const f64, iterations_count: i32, alpha: f64, model_len: i32, inputs_len: i32, outputs_len: i32){
+pub extern "C" fn train_rosenblatt_linear_model(model: *mut f32, dataset_inputs: *const f32, dataset_expected_outputs: *const f32, iterations_count: i32, alpha: f32, model_len: i32, inputs_len: i32, outputs_len: i32){
     let mut rng = rand::thread_rng();
     let mut model = unsafe{
         from_raw_parts_mut(model, model_len as usize)
@@ -63,12 +63,12 @@ pub extern "C" fn train_rosenblatt_linear_model(model: *mut f64, dataset_inputs:
     let mut k = 0;
     let mut Xk;
     let mut yk = 0.0;
-    let mut gXk = 0.0;
+    let mut gXk = 0.0 as f32;
     for it in 0..iterations_count{
         k = rng.gen_range(0..sample_count) as usize;
         Xk = &dataset_inputs[k * model_len_usize..(k + 1) * model_len_usize];
         yk = dataset_expected_outputs[k];
-        gXk = predict_linear_model_classification(model.as_ptr(), Xk.as_ptr(), model_len, inputs_len ) as f64;
+        gXk = predict_linear_model_classification(model.as_ptr(), Xk.as_ptr(), model_len, inputs_len );
 
         model[0] += alpha * yk - gXk * 1.0;
         for i in 1..model_len_usize{
@@ -108,7 +108,7 @@ pub extern "C" fn train_regression_linear_model(model: *mut f32, all_inputs: *co
 }
 
 #[no_mangle]
-pub extern "C" fn destroy_array(arr: *mut f64, arr_size: i32) {
+pub extern "C" fn destroy_array(arr: *mut f32, arr_size: i32) {
     unsafe {
         let _ = Vec::from_raw_parts(arr, arr_size as usize, arr_size as usize);
     }
