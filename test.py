@@ -3,9 +3,10 @@ import numpy as np
 import os
 
 path_to_shared_library = "target/debug/librust_lib.dylib"
+path_to_shared_library_windows = "target\\debug\\rust_lib.dll"
 
 if __name__ == "__main__":
-    my_lib = cdll.LoadLibrary(path_to_shared_library)
+    my_lib = cdll.LoadLibrary(path_to_shared_library_windows)
     my_lib.create_model.argtypes = [c_int]
     my_lib.create_model.restype = POINTER(c_float)
 
@@ -20,8 +21,7 @@ if __name__ == "__main__":
     inputs_type = c_float * inputs_len
     outputs_type = c_float * expected_len
 
-    my_lib.train_rosenblatt_linear_model.argtypes = [arr_type, inputs_type, outputs_type, c_int, c_float, c_int, c_int,
-                                                     c_int]
+    my_lib.train_rosenblatt_linear_model.argtypes = [arr_type, inputs_type, outputs_type, c_int, c_float, c_int, c_int,                                                     c_int]
     my_lib.train_rosenblatt_linear_model.restype = None
     inputs_native = inputs_type(*dataset_inputs)
     outputs_native = outputs_type(*dataset_expected_outputs)
