@@ -60,8 +60,8 @@ pub extern "C" fn train_rosenblatt_linear_model(model: *mut f32, dataset_inputs:
     let dataset_expected_outputs = unsafe{
         from_raw_parts(dataset_expected_outputs, outputs_len as usize)
     };
-    let model_len_usize = model_len as usize;
-    let sample_count = inputs_len / model_len;
+    let model_len_usize = (model_len - 1) as usize;
+    let sample_count = inputs_len / (model_len - 1);
     let mut k = 0;
     let mut Xk;
     let mut yk = 0.0;
@@ -71,9 +71,8 @@ pub extern "C" fn train_rosenblatt_linear_model(model: *mut f32, dataset_inputs:
         Xk = &dataset_inputs[k * model_len_usize..(k + 1) * model_len_usize];
         yk = dataset_expected_outputs[k];
         gXk = predict_linear_model_classification(model.as_ptr(), Xk.as_ptr(), model_len, inputs_len );
-
-        model[0] += alpha * yk - gXk * 1.0;
-        for i in 1..model_len_usize{
+        model[0] += alpha * (yk - gXk) * 1.0;
+        for i in 1..(model_len_usize + 1){
             model[i] += alpha * (yk - gXk) * Xk[i-1];
         }
     }
