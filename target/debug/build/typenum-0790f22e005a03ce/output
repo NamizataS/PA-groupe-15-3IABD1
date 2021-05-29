@@ -1,0 +1,2 @@
+cargo:rustc-env=TYPENUM_BUILD_CONSTS=C:\Users\clara\Desktop\ESGI\L3\S2\PA\repo\PA-groupe-15-3IABD1\target\debug\build\typenum-0790f22e005a03ce\out\consts.rs
+cargo:rustc-env=TYPENUM_BUILD_OP=C:\Users\clara\Desktop\ESGI\L3\S2\PA\repo\PA-groupe-15-3IABD1\target\debug\build\typenum-0790f22e005a03ce\out\op.rs
