@@ -25,6 +25,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Rust File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -32,6 +33,9 @@
     <option name="directoryName" value="fvhgdmrg" />
   </component>
   <component name="ProjectId" id="1sJ95PkZKfQqQZ9ox5wgrQ7kP4c" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -40,10 +44,11 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="cf.first.check.clang-format" value="false" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Issue.Navigation" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Cargo.Run PA-groupe-15-3IABD1">
+  <component name="RunManager" selected="Python.app">
     <configuration name="Run PA-groupe-15-3IABD1" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="command" value="run --package PA-groupe-15-3IABD1 --bin PA-groupe-15-3IABD1" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -74,8 +79,24 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-      <option name="command" value="run" />
+    <configuration name="build" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="build --package PA-groupe-15-3IABD1 --lib" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="run" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="run --package PA-groupe-15-3IABD1 --bin PA-groupe-15-3IABD1" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
       <option name="requiredFeatures" value="true" />
       <option name="allFeatures" value="false" />
@@ -93,14 +114,47 @@
         <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="PA-groupe-15-3IABD1" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/app.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Cargo.Test" />
+      <item itemvalue="Cargo.Run PA-groupe-15-3IABD1" />
+      <item itemvalue="Cargo.build" />
+      <item itemvalue="Cargo.run" />
+      <item itemvalue="Python.app" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.Run PA-groupe-15-3IABD1" />
+        <item itemvalue="Python.app" />
+        <item itemvalue="Cargo.run" />
+        <item itemvalue="Cargo.build" />
+        <item itemvalue="Cargo.run" />
+        <item itemvalue="Cargo.build" />
       </list>
     </recent_temporary>
   </component>
   <component name="RustProjectSettings">
     <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />
+    <option name="version" value="2" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -116,5 +170,38 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1398" height="200" key="GridCell.Tab.0.bottom" timestamp="1622316928308">
+      <screen x="0" y="25" width="1440" height="791" />
+    </state>
+    <state width="1398" height="200" key="GridCell.Tab.0.bottom/0.25.1440.791/1440.25.1920.1055@0.25.1440.791" timestamp="1622316928308" />
+    <state width="1398" height="200" key="GridCell.Tab.0.center" timestamp="1622316928307">
+      <screen x="0" y="25" width="1440" height="791" />
+    </state>
+    <state width="1398" height="200" key="GridCell.Tab.0.center/0.25.1440.791/1440.25.1920.1055@0.25.1440.791" timestamp="1622316928307" />
+    <state width="1398" height="200" key="GridCell.Tab.0.left" timestamp="1622316928306">
+      <screen x="0" y="25" width="1440" height="791" />
+    </state>
+    <state width="1398" height="200" key="GridCell.Tab.0.left/0.25.1440.791/1440.25.1920.1055@0.25.1440.791" timestamp="1622316928306" />
+    <state width="1398" height="200" key="GridCell.Tab.0.right" timestamp="1622316928307">
+      <screen x="0" y="25" width="1440" height="791" />
+    </state>
+    <state width="1398" height="200" key="GridCell.Tab.0.right/0.25.1440.791/1440.25.1920.1055@0.25.1440.791" timestamp="1622316928307" />
+    <state x="229" y="56" key="SettingsEditor" timestamp="1622314084584">
+      <screen x="0" y="25" width="1440" height="791" />
+    </state>
+    <state x="229" y="56" key="SettingsEditor/0.25.1440.791/1440.25.1920.1055@0.25.1440.791" timestamp="1622314084584" />
   </component>
 </project>
