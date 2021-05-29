@@ -44,6 +44,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="cf.first.check.clang-format" value="false" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
     <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Issue.Navigation" />
   </component>
@@ -120,6 +121,7 @@
       <updated>1620579641826</updated>
       <workItem from="1620579643414" duration="205000" />
       <workItem from="1621346600325" duration="19000" />
+      <workItem from="1621876535841" duration="468000" />
     </task>
     <servers />
   </component>
