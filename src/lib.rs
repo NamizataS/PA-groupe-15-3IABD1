@@ -278,12 +278,18 @@ pub extern "C" fn train_classification_stochastic_backdrop_mlp_model(model: *mut
 }
 
 #[no_mangle]
-pub extern "C" fn train_regression_stochastic_backdrop_mlp_model(model: &mut MLP, flattened_dataset_inputs: *mut f32, flattened_expected_outputs: *mut f32, alpha: f32, iterations_count: i32, inputs_len: i32, outputs_len: i32){
+pub extern "C" fn train_regression_stochastic_backdrop_mlp_model(model: *mut MLP, flattened_dataset_inputs: *mut f32, flattened_expected_outputs: *mut f32, alpha: f32, iterations_count: i32, inputs_len: i32, outputs_len: i32){
+    let mut model = unsafe{
+        model.as_mut().unwrap()
+    };
     train_stochastic_gradient_backpropagation(model,flattened_dataset_inputs,flattened_expected_outputs, false, alpha, iterations_count, inputs_len, outputs_len);
 }
 
 #[no_mangle]
-pub extern "C" fn predict_mlp_model_regression(model: &mut MLP, sample_inputs: *mut f32, inputs_len:i32) -> Vec<f32> {
+pub extern "C" fn predict_mlp_model_regression(model: *mut MLP, sample_inputs: *mut f32, inputs_len:i32) -> Vec<f32> {
+    let mut model = unsafe{
+        model.as_mut().unwrap()
+    };
     forward_pass(model,sample_inputs,false,inputs_len);
     let mut result:Vec<f32> = Vec::new();
     let L = (model.d_len - 1) as usize;
@@ -298,6 +304,13 @@ pub extern "C" fn predict_mlp_model_regression(model: &mut MLP, sample_inputs: *
 pub extern "C" fn destroy_array(arr: *mut f64, arr_size: i32) {
     unsafe {
         let _ = Vec::from_raw_parts(arr, arr_size as usize, arr_size as usize);
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn destroy_model(model: *mut MLP){
+    unsafe{
+        let _ = Box::from_raw(model);
     }
 }
 
