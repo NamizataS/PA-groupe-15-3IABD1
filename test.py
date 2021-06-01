@@ -8,10 +8,10 @@ path_to_shared_library = "target/debug/librust_lib.dylib"
 if __name__ == "__main__":
     my_lib = cdll.LoadLibrary(path_to_shared_library)
     d = [2, 2, 1]
-    X = np.array([[1, 0], [0, 1], [0, 0], [1, 1]])
-    Y = np.array([1, 1, -1, -1])
+    X = np.array([[1.0, 0.0], [0.0, 1.0], [0.0, 0.0], [1.0, 1.0]])
+    Y = np.array([1.0, 1.0, -1.0, -1.0])
 
-    X_test = [2.0, -3.0]
+    X_test = [2.0, 3.0]
 
     X_flat = []
     for elt in X:
@@ -25,6 +25,16 @@ if __name__ == "__main__":
     my_lib.create_mlp_model.restype = c_void_p
 
     mlp = my_lib.create_mlp_model(native_arr, arr_size)
+
+    x_test_size = len(X_test)
+    x_test_type = c_float * x_test_size
+    my_lib.predict_mlp_model_classification.argtypes = [c_void_p, x_test_type, c_int]
+    my_lib.predict_mlp_model_classification.restype = POINTER(c_float)
+    x_test_native = x_test_type(*X_test)
+    pred = my_lib.predict_mlp_model_classification(mlp, x_test_native, x_test_size)
+    np_arr = np.ctypeslib.as_array(pred, (1,))
+    print(np_arr)
+
     x_size = len(X_flat)
     x_type = c_float * x_size
     y_size = len(Y)
