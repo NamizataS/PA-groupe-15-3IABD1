@@ -8,7 +8,6 @@ use libm::*;
 
 
 pub struct MLP{
-    d_len: i32,
     d: Vec<i32>,
     W: Vec<Vec<Vec<f32>>>,
     x: Vec<Vec<f32>>,
@@ -148,18 +147,17 @@ pub extern "C" fn create_mlp_model(npl: *mut i32, npl_len: i32) -> *mut MLP{
         from_raw_parts(npl, npl_len as usize)
     };
     let mut d = to_vec_int(tmp_d);
-    for l in 0..npl_len{
+
+    for l in 0..npl_len{ //for each layer
         let mut new_vec_w: Vec<Vec<f32>> = Vec::new();
         let mut l_usize = l as usize;
-        if l== 0 {
+        if l== 0 { //no previous layer so empty
             W.push(new_vec_w);
             continue;
         }
-        for i in 0..(d[(l_usize-1)]+1){
-            let mut i_usize = i as usize;
+        for i in 0..(d[(l_usize-1)]+1){ //for each neuron of the previous layer/l-1 represent the previous layer
             let mut new_vec: Vec<f32> = Vec::new();
-            for j in 0..(d[l_usize]+1){
-                let mut j_usize = j as usize;
+            for j in 0..(d[l_usize]+1){ //for each neuron of the next layer
                 let mut num = uni.sample(&mut rng) as f32;
                 new_vec.push(num);
             }
@@ -167,7 +165,7 @@ pub extern "C" fn create_mlp_model(npl: *mut i32, npl_len: i32) -> *mut MLP{
         }
         W.push(new_vec_w);
     }
-    let mut X : Vec<Vec<f32>> = Vec::new();
+    let mut X : Vec<Vec<f32>> = Vec::new(); //output of each neuron
     for l in 0..npl_len{
         let mut l_usize = l as usize;
         let mut new_vec_X: Vec<f32> = Vec::new();
@@ -194,7 +192,6 @@ pub extern "C" fn create_mlp_model(npl: *mut i32, npl_len: i32) -> *mut MLP{
         deltas.push(new_vec_deltas);
     }
     let model = MLP {
-        d_len: npl_len,
         d,
         W,
         x: X,
@@ -205,18 +202,18 @@ pub extern "C" fn create_mlp_model(npl: *mut i32, npl_len: i32) -> *mut MLP{
 }
 
 #[no_mangle]
-pub extern "C" fn forward_pass(model: &mut MLP, sample_inputs: *const f32, is_classification: bool, inputs_len: i32){
+pub extern "C" fn forward_pass(model: &mut MLP, sample_inputs: *const f32, is_classification: bool, inputs_len: i32){//compute outputs of every neuron of every layer
     let sample_inputs_tmp = unsafe{
         from_raw_parts(sample_inputs, inputs_len as usize)
     };
-    let L = model.d.len() - 1;
     let mut sample_inputs = to_vec_float(sample_inputs_tmp);
+
     for j in 1..(model.d[0]+1){
         let mut j_usize = j as usize;
         model.x[0][j_usize] = sample_inputs[j_usize-1];
     }
-    for l in 1..(L+1) {
-        for j in 1..(model.d[l]+1){
+    for l in 1..model.d.len() {
+        for j in 1..model.d[l]+1{
             let mut j_usize = j as usize;
             let mut sum_result = 0.0;
             for i in 0..(model.d[l - 1] + 1){
@@ -224,7 +221,7 @@ pub extern "C" fn forward_pass(model: &mut MLP, sample_inputs: *const f32, is_cl
                 sum_result += model.W[l][i_usize][j_usize] * model.x[l-1][i_usize];
             }
             model.x[l][j_usize] = sum_result;
-            if l < L || is_classification {
+            if l < (model.d.len() - 1) || is_classification {
                 model.x[l][j_usize] = tanhf(model.x[l][j_usize]);
             }
         }
@@ -234,10 +231,9 @@ pub extern "C" fn forward_pass(model: &mut MLP, sample_inputs: *const f32, is_cl
 #[no_mangle]
 pub extern "C" fn train_stochastic_gradient_backpropagation(model: &mut MLP, flattened_dataset_inputs: *mut f32, flatenned_expected_outputs: *mut f32, is_classification: bool, alpha: f32, iteration_count: i32, inputs_len: i32, output_len: i32){
     let mut rng = rand::thread_rng();
-    let mut L = model.d_len - 1;
-    let mut L_usize = L as usize;
+    let mut L = model.d.len() - 1;
     let input_dim = model.d[0] as usize;
-    let output_dim = model.d[L_usize] as usize;
+    let output_dim = model.d[L] as usize;
     let sample_count = inputs_len / input_dim as i32;
 
     let mut flattened_dataset_inputs = unsafe{
@@ -247,19 +243,19 @@ pub extern "C" fn train_stochastic_gradient_backpropagation(model: &mut MLP, fla
         from_raw_parts(flatenned_expected_outputs, output_len as usize)
     };
     for it in 0..iteration_count{
-        let mut k = (rng.gen_range(0..(sample_count-1))) as usize;
+        let mut k = (rng.gen_range(0..sample_count)) as usize;
+        let mut inputs_len = (k+1)*input_dim - k*input_dim;
         let mut sample_inputs = &flattened_dataset_inputs[k*input_dim..(k+1)*input_dim];
         let mut sample_expected_outputs = &flattened_expected_outputs[k*output_dim..(k+1)*output_dim];
-        forward_pass(model,sample_inputs.as_ptr(),is_classification,sample_inputs.len() as i32);
-
-        for j in 1..(model.d[L_usize] +1) as usize{
-            model.deltas[L_usize][j] = (model.x[L_usize][j] - sample_expected_outputs[j-1]);
+        forward_pass(model,sample_inputs.as_ptr(),is_classification,inputs_len as i32);
+        for j in 1..(model.d[L] as usize+1){
+            model.deltas[L][j] = model.x[L][j] - sample_expected_outputs[j-1];
             if is_classification{
-                model.deltas[L_usize][j] *= (1.0 - model.x[L_usize][j] * model.x[L_usize][j] );
+                model.deltas[L][j] = (1.0 - model.x[L][j] * model.x[L][j] )*model.deltas[L][j];
             }
         }
-        for l in (1..(L_usize+1)).rev(){
-            for i in 1..(model.d[l-1]+1) as usize{
+        for l in (1..(L+1)).rev(){
+            for i in 0..(model.d[l-1]+1) as usize{
                 let mut sum_result = 0.0;
                 for j in 1..(model.d[l]+1) as usize{
                     sum_result += model.W[l][i][j] * model.deltas[l][j];
@@ -267,10 +263,10 @@ pub extern "C" fn train_stochastic_gradient_backpropagation(model: &mut MLP, fla
                 model.deltas[l-1][i] = (1.0 - model.x[l-1][i] * model.x[l-1][i]) * sum_result;
             }
         }
-        for l in 1..(L_usize+1){
+        for l in 1..(L+1){
             for i in 0..(model.d[l-1]+1) as usize{
                 for j in 1..(model.d[l] +1) as usize{
-                    model.W[l][i][j] -= alpha * model.x[l-1][i] * model.deltas[l][j];
+                    model.W[l][i][j] += - alpha * model.x[l-1][i] * model.deltas[l][j];
                 }
             }
         }
@@ -279,15 +275,15 @@ pub extern "C" fn train_stochastic_gradient_backpropagation(model: &mut MLP, fla
 }
 
 #[no_mangle]
-pub extern "C" fn predict_mlp_model_classification(model: *mut MLP, sample_inputs: *mut f32, inputs_len:i32) -> *const f32 {
+pub extern "C" fn predict_mlp_model_classification(model: *mut MLP, sample_inputs: *mut f32, inputs_len:i32) -> *mut f32 {
     let mut model = unsafe{
         model.as_mut().unwrap()
     };
     forward_pass(model,sample_inputs,true,inputs_len);
-    let L = model.d.len() - 1;
-    let mut result = &model.x[L][1..(model.d[L] +1) as usize];
-    println!("{:?}",result.len());
-    result.as_ptr()
+    let L = (model.d.len() - 1) as usize;
+    let i = (model.d[L] + 1) as usize;
+    let mut result:&mut[f32] = &mut model.x[L][1..i];
+    result.as_mut_ptr()
 }
 
 #[no_mangle]
@@ -299,23 +295,23 @@ pub extern "C" fn train_classification_stochastic_backdrop_mlp_model(model: *mut
 }
 
 #[no_mangle]
-pub extern "C" fn train_regression_stochastic_backdrop_mlp_model(model: &mut MLP, flattened_dataset_inputs: *mut f32, flattened_expected_outputs: *mut f32, alpha: f32, iterations_count: i32, inputs_len: i32, outputs_len: i32){
+pub extern "C" fn train_regression_stochastic_backdrop_mlp_model(model: *mut MLP, flattened_dataset_inputs: *mut f32, flattened_expected_outputs: *mut f32, alpha: f32, iterations_count: i32, inputs_len: i32, outputs_len: i32){
+    let mut model = unsafe{
+        model.as_mut().unwrap()
+    };
     train_stochastic_gradient_backpropagation(model,flattened_dataset_inputs,flattened_expected_outputs, false, alpha, iterations_count, inputs_len, outputs_len);
 }
 
 #[no_mangle]
-pub extern "C" fn predict_mlp_model_regression(model: *mut MLP, sample_inputs: *mut f32, inputs_len:i32) -> Vec<f32> {
+pub extern "C" fn predict_mlp_model_regression(model: *mut MLP, sample_inputs: *mut f32, inputs_len:i32) -> *mut f32 {
     let mut model = unsafe{
         model.as_mut().unwrap()
     };
     forward_pass(model,sample_inputs,false,inputs_len);
-    let mut result:Vec<f32> = Vec::new();
-    let L = (model.d_len - 1) as usize;
-    for i in 1..model.d[L] +1{
-        let mut i_usize = i as usize;
-        result.push(model.x[L][i_usize]);
-    }
-    result
+    let L = (model.d.len() - 1) as usize;
+    let i = (model.d[L] + 1) as usize;
+    let mut result:&mut[f32] = &mut model.x[L][1..i];
+    result.as_mut_ptr()
 }
 
 #[no_mangle]

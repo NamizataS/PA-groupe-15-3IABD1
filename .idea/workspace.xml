@@ -13,12 +13,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3001ee7c-2b66-450d-bb56-ea9dbde155de" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Notebook___CAS_DE_TESTS.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Notebook___CAS_DE_TESTS.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -135,7 +130,7 @@
         <item itemvalue="Cargo.build" />
         <item itemvalue="Cargo.build" />
         <item itemvalue="Cargo.build" />
-        <item itemvalue="Python.test" />
+        <item itemvalue="Cargo.build" />
       </list>
     </recent_temporary>
   </component>
@@ -157,6 +152,7 @@
       <workItem from="1622387860363" duration="2558000" />
       <workItem from="1622390494353" duration="3747000" />
       <workItem from="1622459192656" duration="3775000" />
+      <workItem from="1622586107111" duration="29000" />
     </task>
     <servers />
   </component>
