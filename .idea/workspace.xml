@@ -13,7 +13,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3001ee7c-2b66-450d-bb56-ea9dbde155de" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Notebook___CAS_DE_TESTS-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/Notebook___CAS_DE_TESTS-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Notebook___CAS_DE_TESTS.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Notebook___CAS_DE_TESTS.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -152,7 +154,9 @@
       <workItem from="1622387860363" duration="2558000" />
       <workItem from="1622390494353" duration="3747000" />
       <workItem from="1622459192656" duration="3775000" />
-      <workItem from="1622586107111" duration="29000" />
+      <workItem from="1622586107111" duration="247000" />
+      <workItem from="1622586441069" duration="718000" />
+      <workItem from="1622632347826" duration="1440000" />
     </task>
     <servers />
   </component>
