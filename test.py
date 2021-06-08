@@ -4,57 +4,42 @@ import matplotlib.pyplot as plt
 import os
 
 path_to_shared_library = "target/debug/librust_lib.dylib"
+def toList(arr):
+    return [j for i in arr for j in i]
 
 if __name__ == "__main__":
     my_lib = cdll.LoadLibrary(path_to_shared_library)
+    X = np.array([
+        [1, 0],
+        [0, 1],
+        [1, 1],
+        [0, 0],
+    ])
+    Y = np.array([
+        2,
+        1,
+        -2,
+        -1
+    ])
+
     d = [2, 2, 1]
-    X = np.array([[1.0, 0.0], [0.0, 1.0], [0.0, 0.0], [1.0, 1.0]])
-    Y = np.array([1.0, 1.0, -1.0, -1.0])
-
-    X_test = [2.0, 3.0]
-
-    X_flat = []
-    for elt in X:
-        X_flat.append(elt[0])
-        X_flat.append(elt[1])
-
-    arr_size = len(d)
-    arr_type = c_int * arr_size
-    native_arr = arr_type(*d)
-    my_lib.create_mlp_model.argtypes = [arr_type, c_int]
+    d_len = len(d)
+    d_type = c_int * d_len
+    my_lib.create_mlp_model.argtypes = [d_type, c_int]
     my_lib.create_mlp_model.restype = c_void_p
 
-    mlp = my_lib.create_mlp_model(native_arr, arr_size)
+    model = my_lib.create_mlp_model(d_type(*d), d_len)
+    sample_inputs_len = 2
+    sample_inputs_type = c_float * sample_inputs_len
 
-    x_test_size = len(X_test)
-    x_test_type = c_float * x_test_size
-    my_lib.predict_mlp_model_classification.argtypes = [c_void_p, x_test_type, c_int]
-    my_lib.predict_mlp_model_classification.restype = POINTER(c_float)
-    x_test_native = x_test_type(*X_test)
-    pred = my_lib.predict_mlp_model_classification(mlp, x_test_native, x_test_size)
-    np_arr = np.ctypeslib.as_array(pred, (1,))
-    print(np_arr)
+    my_lib.predict_mlp_model_regression.argtypes = [c_void_p, sample_inputs_type, c_int]
+    my_lib.predict_mlp_model_regression.restype = POINTER(c_float)
+    test_dataset_inputs = [[i,j] for i in range(-10, 11) for j in range (-10,11)]
+    predicted_outputs = [my_lib.predict_mlp_model_regression(model, sample_inputs_type(*p), sample_inputs_len)[0] for p
+                         in test_dataset_inputs]
+    test_dataset_inputs = np.array(test_dataset_inputs)
 
-    x_size = len(X_flat)
-    x_type = c_float * x_size
-    y_size = len(Y)
-    y_type = c_float * y_size
-    my_lib.train_classification_stochastic_backdrop_mlp_model.argtypes = [c_void_p, x_type, y_type, c_float, c_int,
-                                                                          c_int, c_int]
-    my_lib.train_classification_stochastic_backdrop_mlp_model.restype = None
-    x_native = x_type(*X_flat)
-    y_native = y_type(*Y)
-    my_lib.train_classification_stochastic_backdrop_mlp_model(mlp, x_native, y_native, 0.01, 100000, x_size, y_size)
-
-    x_test_size = len(X_test)
-    x_test_type = c_float * x_test_size
-    my_lib.predict_mlp_model_classification.argtypes = [c_void_p, x_test_type, c_int]
-    my_lib.predict_mlp_model_classification.restype = POINTER(c_float)
-    x_test_native = x_test_type(*X_test)
-    pred = my_lib.predict_mlp_model_classification(mlp, x_test_native, x_test_size)
-    np_arr = np.ctypeslib.as_array(pred, (1,))
-    print(np_arr)
-
+    # Free memory
     my_lib.destroy_model.argtypes = [c_void_p]
     my_lib.destroy_model.restype = None
-    my_lib.destroy_model(mlp)
+    my_lib.destroy_model(model)

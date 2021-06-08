@@ -19,7 +19,7 @@ pub struct MLP{
 pub extern "C" fn create_model(x: i32) -> *mut f32{
     let mut rng = rand::thread_rng();
     let mut model = Vec::with_capacity(x as usize);
-    for _ in 0..x{
+    for _ in 0..(x+1){
         let mut num = rng.gen_range(-1.0..1.0); //1.0 not include
         if num>1.0{
             num=1.0;
