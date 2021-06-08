@@ -90,20 +90,23 @@ pub extern "C" fn train_rosenblatt_linear_model(model: *mut f32, dataset_inputs:
 }
 
 #[no_mangle]
-pub extern "C" fn train_regression_linear_model(model: *mut f32, all_inputs: *const f32, all_expected_outputs: *const f32, sample_count: usize,input_dim: usize, output_dim: usize){
+pub extern "C" fn train_regression_linear_model(model: *mut f32, dataset_inputs: *const f32, dataset_expected_outputs: *const f32, model_size: i32, dataset_inputs_len: i32, dataset_outputs_len: i32, input_dim: i32, output_dim: i32){
 
-    let (all_inputs_slice, all_expected_outputs_slice) =
+    let (dataset_inputs_slice, dataset_outputs_slice) =
         unsafe {
-            (from_raw_parts(all_inputs, sample_count * input_dim),
-             from_raw_parts(all_expected_outputs, sample_count * output_dim))
+            (from_raw_parts(dataset_inputs, dataset_inputs_len as usize),
+             from_raw_parts(dataset_expected_outputs, dataset_outputs_len as usize))
         };
 
     let mut model = unsafe{
-        from_raw_parts_mut(model, sample_count as usize)
+        from_raw_parts_mut(model, model_size as usize)
     };
 
-    let X = DMatrix::from_iterator(sample_count, input_dim, all_inputs_slice.iter().cloned());
-    let Y = DMatrix::from_iterator(sample_count, output_dim, all_expected_outputs_slice.iter().cloned());
+    let mut model_dim = (model_size - 1) as usize;
+    let mut sample_count = (dataset_inputs_len as usize) / model_dim;
+
+    let X = DMatrix::from_iterator(sample_count, input_dim as usize, dataset_inputs_slice.iter().cloned());
+    let Y = DMatrix::from_iterator(sample_count, output_dim as usize, dataset_outputs_slice.iter().cloned());
 
 
     let X = X.insert_columns(0, 1, 1.0);
