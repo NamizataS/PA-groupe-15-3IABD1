@@ -13,15 +13,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3001ee7c-2b66-450d-bb56-ea9dbde155de" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/PA-groupe-15-3IABD1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/PA-groupe-15-3IABD1.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Notebook_CAS_DE_TESTS_GROUPE_15-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/Notebook_CAS_DE_TESTS_GROUPE_15-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/test_dataset-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/test_dataset-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Notebook_CAS_DE_TESTS_GROUPE_15.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Notebook_CAS_DE_TESTS_GROUPE_15.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_dataset.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/test_dataset.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -219,6 +212,9 @@
       <workItem from="1624017632304" duration="586000" />
       <workItem from="1624107597368" duration="442000" />
       <workItem from="1624116307942" duration="25000" />
+      <workItem from="1624118457023" duration="1744000" />
+      <workItem from="1624298014590" duration="3215000" />
+      <workItem from="1624374836797" duration="3782000" />
     </task>
     <servers />
   </component>

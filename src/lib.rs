@@ -14,7 +14,16 @@ pub struct MLP{
     deltas: Vec<Vec<f32>>
 }
 
+pub struct RBF{
+    W: Vec<f32>,
+    mu: Vec<f32>,
+    gamma: Vec<f32>,
+    K: i32,
+    sample_count: usize,
+    input_dim: usize
+}
 
+//LINEAR MODEL
 #[no_mangle]
 pub extern "C" fn create_model(x: i32) -> *mut f32{
     let mut rng = rand::thread_rng();
@@ -122,6 +131,7 @@ pub extern "C" fn train_regression_linear_model(model: *mut f32, dataset_inputs:
     }
 }
 
+//MLP MODEL
 
 #[no_mangle]
 pub extern "C" fn to_vec_int(tmp_vec : &[i32])->Vec<i32>{
@@ -317,6 +327,84 @@ pub extern "C" fn predict_mlp_model_regression(model: *mut MLP, sample_inputs: *
     result.as_mut_ptr()
 }
 
+//RBF
+
+#[no_mangle]
+pub extern "C" fn create_rbf_model(x: i32, K: i32, dataset_inputs: *mut f32, dataset_inputs_len: i32, input_dim: i32) -> *mut RBF{
+    let mut rng = rand::thread_rng();
+    let mut W:Vec<f32> = Vec::new();
+    let mut gamma:Vec<f32> = Vec::new();
+    let mut mu:Vec<f32> = Vec::new();
+    let dataset_inputs = unsafe{
+        from_raw_parts(dataset_inputs,dataset_inputs_len as usize)
+    };
+    let sample_count = (dataset_inputs_len / x) as usize;
+    let input_dim = input_dim as usize;
+    for _ in 0..K{
+        let mut num = rng.gen_range(-1.0..1.0);
+        W.push(num);
+    }
+
+    for _ in 0..K{
+        let mut k = rng.gen_range(0..(sample_count));
+        let mut num = &dataset_inputs[k * (x as usize)..(k+1) * (x as usize)];
+        for i in 0..num.len(){
+            mu.push(num[i]);
+        }
+    }
+
+    for _ in 0..K{
+        let mut num = rng.gen_range(0.0..1.0);
+        gamma.push(num);
+    }
+
+    let model = RBF{
+        W,
+        mu,
+        gamma,
+        K,
+        sample_count,
+        input_dim
+    };
+    let model_leaked = Box::leak(Box::from(model));
+    model_leaked as *mut RBF
+}
+
+#[no_mangle]
+pub extern "C" fn train_rbf_model(model: &mut RBF, flattened_dataset_inputs: *mut f32, dataset_outputs: *mut f32, dataset_inputs_len: i32, dataset_output_len: i32, output_dim: i32){
+    let mut phi:Vec<f32> = Vec::new();
+    let flattened_dataset_inputs = unsafe{
+        from_raw_parts(flattened_dataset_inputs, dataset_inputs_len as usize)
+    };
+    let dataset_outputs = unsafe{
+        from_raw_parts(dataset_outputs, dataset_output_len as usize)
+    };
+    for mut i in (0..(dataset_inputs_len as usize)).step_by(model.input_dim){
+        let mut sample_inputs = &flattened_dataset_inputs[i..i+(model.input_dim)];
+        let mut gamma_count = 0 as usize;
+        for mut j in (0..(model.mu.len())).step_by(model.input_dim){
+            let mut distance = 0.0f32;
+            let mut sample_mu = &model.mu[j..j+model.input_dim];
+            for k in 0..model.input_dim{
+                distance += powf((sample_inputs[k]-sample_mu[k]), 2.0);
+                distance = sqrtf(distance);
+            }
+            distance = powf(distance, 2.0);
+            let mut value = expf(-model.gamma[gamma_count] * distance);
+            phi.push(value);
+            gamma_count += 1;
+        }
+    }
+    let phi = DMatrix::from_iterator(model.sample_count, model.K as usize, phi.iter().cloned());
+    let Y = DMatrix::from_iterator(model.sample_count, output_dim as usize, dataset_outputs.iter().cloned());
+    let phiTphi = &phi.transpose() * &phi;
+    let phiTphiInv = phiTphi.cholesky().unwrap().inverse();
+    let W = (phiTphiInv * &phi.transpose()) * Y;
+    for (i, row) in W.row_iter().enumerate() {
+        model.W[i] =W.row(i)[0];
+    }
+}
+
 #[no_mangle]
 pub extern "C" fn destroy_array(arr: *mut f32, arr_size: i32) {
     unsafe {
@@ -326,6 +414,13 @@ pub extern "C" fn destroy_array(arr: *mut f32, arr_size: i32) {
 
 #[no_mangle]
 pub extern "C" fn destroy_model(model: *mut MLP){
+    unsafe{
+        let _ = Box::from_raw(model);
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn destroy_rbf_model(model: *mut RBF){
     unsafe{
         let _ = Box::from_raw(model);
     }
