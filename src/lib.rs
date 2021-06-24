@@ -459,10 +459,16 @@ pub extern "C" fn train_em_rbf_model_regression(model: *mut RBF, flattened_datas
 }
 #[no_mangle]
 pub extern "C" fn train_em_rbf_model(model: &mut RBF, flattened_dataset_inputs: *mut f32, dataset_outputs: *mut f32, dataset_inputs_len: i32, dataset_outputs_len: i32, output_dim: i32, learning_rate: f32, iterations: i32, is_classification: bool){
-    for _ in 0..iterations{
-        train_rbf_model(model, flattened_dataset_inputs, dataset_outputs, dataset_inputs_len, dataset_outputs_len, output_dim);
-        for i in 0..(model.K as usize){
+    for i in 0..(model.K as usize){
+        let precision = 0.000001;
+        let mut previous_step_rate = 1.0f32;
+        let mut iterations_count = 0;
+        while previous_step_rate > precision && iterations_count < iterations{
+            train_rbf_model(model, flattened_dataset_inputs, dataset_outputs, dataset_inputs_len, dataset_outputs_len, output_dim);
+            let mut prev_gamma = model.gamma[i];
             model.gamma[i] -= learning_rate * gradient(model, i, flattened_dataset_inputs, dataset_inputs_len, dataset_outputs, dataset_outputs_len, is_classification);
+            previous_step_rate = model.gamma[i] - prev_gamma;
+            iterations_count += 1;
         }
     }
 }

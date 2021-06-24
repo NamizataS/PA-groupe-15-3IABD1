@@ -104,11 +104,6 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="PA-groupe-15-3IABD1" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -181,7 +176,7 @@
         <item itemvalue="Cargo.build" />
         <item itemvalue="Cargo.build" />
         <item itemvalue="Cargo.build" />
-        <item itemvalue="Python.app" />
+        <item itemvalue="Cargo.build" />
       </list>
     </recent_temporary>
   </component>
@@ -222,7 +217,10 @@
       <workItem from="1624118457023" duration="1744000" />
       <workItem from="1624298014590" duration="3215000" />
       <workItem from="1624374836797" duration="3961000" />
-      <workItem from="1624524142449" duration="4791000" />
+      <workItem from="1624524142449" duration="5557000" />
+      <workItem from="1624542368077" duration="38000" />
+      <workItem from="1624548749711" duration="623000" />
+      <workItem from="1624552694054" duration="1366000" />
     </task>
     <servers />
   </component>
