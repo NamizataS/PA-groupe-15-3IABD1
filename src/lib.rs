@@ -330,7 +330,7 @@ pub extern "C" fn predict_mlp_model_regression(model: *mut MLP, sample_inputs: *
 //RBF
 
 #[no_mangle]
-pub extern "C" fn create_rbf_model(x: i32, K: i32, dataset_inputs: *mut f32, dataset_inputs_len: i32, input_dim: i32) -> *mut RBF{
+pub extern "C" fn create_rbf_model(K: i32, dataset_inputs: *mut f32, dataset_inputs_len: i32, input_dim: i32) -> *mut RBF{
     let mut rng = rand::thread_rng();
     let mut W:Vec<f32> = Vec::new();
     let mut gamma:Vec<f32> = Vec::new();
@@ -338,16 +338,22 @@ pub extern "C" fn create_rbf_model(x: i32, K: i32, dataset_inputs: *mut f32, dat
     let dataset_inputs = unsafe{
         from_raw_parts(dataset_inputs,dataset_inputs_len as usize)
     };
-    let sample_count = (dataset_inputs_len / x) as usize;
+    let sample_count = (dataset_inputs_len / input_dim) as usize;
     let input_dim = input_dim as usize;
     for _ in 0..K{
         let mut num = rng.gen_range(-1.0..1.0);
         W.push(num);
     }
-
-    for _ in 0..K{
+    let mut k_vec = Vec::new();
+    for count in 0..K{
         let mut k = rng.gen_range(0..(sample_count));
-        let mut num = &dataset_inputs[k * (x as usize)..(k+1) * (x as usize)];
+        if count != 0 {
+            while k_vec.contains(&k){
+                k = rng.gen_range(0..sample_count);
+            }
+        }
+        k_vec.push(k);
+        let mut num = &dataset_inputs[k * (input_dim)..(k+1) * (input_dim)];
         for i in 0..num.len(){
             mu.push(num[i]);
         }
@@ -387,8 +393,8 @@ pub extern "C" fn train_rbf_model(model: &mut RBF, flattened_dataset_inputs: *mu
             let mut sample_mu = &model.mu[j..j+model.input_dim];
             for k in 0..model.input_dim{
                 distance += powf((sample_inputs[k]-sample_mu[k]), 2.0);
-                distance = sqrtf(distance);
             }
+            distance = sqrtf(distance);
             distance = powf(distance, 2.0);
             let mut value = expf(-model.gamma[gamma_count] * distance);
             phi.push(value);
@@ -403,6 +409,90 @@ pub extern "C" fn train_rbf_model(model: &mut RBF, flattened_dataset_inputs: *mu
     for (i, row) in W.row_iter().enumerate() {
         model.W[i] =W.row(i)[0];
     }
+}
+
+#[no_mangle]
+pub extern "C" fn predict_rbf_model_regression(model: *mut RBF, sample_inputs: *const f32)->f32{
+    let mut model = unsafe{
+        model.as_mut().unwrap()
+    };
+    let sample_inputs = unsafe{
+        from_raw_parts(sample_inputs, model.input_dim)
+    };
+    let mut sum_result = 0.0f32;
+    for i in 0..model.W.len(){
+        let mut distance = 0.0f32;
+        for j in 0..model.input_dim{
+            distance += powf(sample_inputs[j] - model.mu[i+j], 2.0);
+        }
+        distance = sqrtf(distance);
+        distance = powf(distance, 2.0);
+        sum_result += model.W[i] * expf(-model.gamma[i] *distance );
+    }
+    sum_result
+}
+
+#[no_mangle]
+pub extern "C" fn predict_rbf_model_classification(model: *mut RBF, sample_inputs: *const f32)->f32{
+    let pred = predict_rbf_model_regression(model, sample_inputs);
+    let mut rslt = 0.0f32;
+    if pred >= 0.0{
+        rslt = 1.0;
+    } else{
+        rslt = -1.0;
+    }
+    rslt
+}
+#[no_mangle]
+pub extern "C" fn train_em_rbf_model_classification(model: *mut RBF, flattened_dataset_inputs: *mut f32, dataset_outputs: *mut f32, dataset_inputs_len: i32, dataset_outputs_len: i32, output_dim: i32, learning_rate: f32, iterations: i32){
+    let mut model = unsafe{
+        model.as_mut().unwrap()
+    };
+    train_em_rbf_model(model, flattened_dataset_inputs, dataset_outputs, dataset_inputs_len, dataset_outputs_len,output_dim, learning_rate, iterations, true);
+}
+#[no_mangle]
+pub extern "C" fn train_em_rbf_model_regression(model: *mut RBF, flattened_dataset_inputs: *mut f32, dataset_outputs: *mut f32, dataset_inputs_len: i32, dataset_outputs_len: i32, output_dim: i32, learning_rate: f32, iterations: i32){
+    let mut model = unsafe{
+        model.as_mut().unwrap()
+    };
+    train_em_rbf_model(model, flattened_dataset_inputs, dataset_outputs, dataset_inputs_len, dataset_outputs_len,output_dim, learning_rate, iterations, false);
+}
+#[no_mangle]
+pub extern "C" fn train_em_rbf_model(model: &mut RBF, flattened_dataset_inputs: *mut f32, dataset_outputs: *mut f32, dataset_inputs_len: i32, dataset_outputs_len: i32, output_dim: i32, learning_rate: f32, iterations: i32, is_classification: bool){
+    for _ in 0..iterations{
+        train_rbf_model(model, flattened_dataset_inputs, dataset_outputs, dataset_inputs_len, dataset_outputs_len, output_dim);
+        for i in 0..(model.K as usize){
+            model.gamma[i] -= learning_rate * gradient(model, i, flattened_dataset_inputs, dataset_inputs_len, dataset_outputs, dataset_outputs_len, is_classification);
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn gradient(model: &mut RBF, i: usize, flattened_dataset_inputs: *mut f32, inputs_len: i32, dataset_outputs: *mut f32, outputs_len: i32,is_classification: bool)->f32{
+    let mut flattened_dataset_inputs = unsafe{
+        from_raw_parts(flattened_dataset_inputs, inputs_len as usize)
+    };
+    let mut dataset_outputs = unsafe{
+        from_raw_parts(dataset_outputs, outputs_len as usize)
+    };
+    let mut sum_result = 0.0f32;
+    for j in 0..model.sample_count{
+        let mut sample_inputs = &flattened_dataset_inputs[j..(j+model.input_dim)];
+        let mut sample_mu = &model.mu[i..(i+model.input_dim)];
+        let mut distance = 0.0f32;
+        for k in 0..model.input_dim{
+            distance += powf(sample_inputs[k] - sample_mu[k], 2.0);
+        }
+        distance = sqrtf(distance);
+        let mut pred = 0.0f32;
+        if is_classification{
+            pred = predict_rbf_model_classification(model, sample_inputs.as_ptr());
+        } else {
+            pred = predict_rbf_model_regression(model, sample_inputs.as_ptr());
+        }
+        sum_result += 2.0 * distance * ( dataset_outputs[j] - pred ) * pred;
+    }
+    sum_result
 }
 
 #[no_mangle]

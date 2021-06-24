@@ -58,7 +58,7 @@
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.app">
+  <component name="RunManager" selected="Cargo.build">
     <configuration name="Run PA-groupe-15-3IABD1" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="command" value="run --package PA-groupe-15-3IABD1 --bin PA-groupe-15-3IABD1" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -102,6 +102,11 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
@@ -172,9 +177,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.build" />
+        <item itemvalue="Cargo.build" />
+        <item itemvalue="Cargo.build" />
+        <item itemvalue="Cargo.build" />
         <item itemvalue="Python.app" />
-        <item itemvalue="Python.test_dataset" />
-        <item itemvalue="Python.test" />
       </list>
     </recent_temporary>
   </component>
@@ -214,7 +221,8 @@
       <workItem from="1624116307942" duration="25000" />
       <workItem from="1624118457023" duration="1744000" />
       <workItem from="1624298014590" duration="3215000" />
-      <workItem from="1624374836797" duration="3782000" />
+      <workItem from="1624374836797" duration="3961000" />
+      <workItem from="1624524142449" duration="4791000" />
     </task>
     <servers />
   </component>
