@@ -5,6 +5,7 @@ use std::iter::FromIterator;
 use std::borrow::Borrow;
 use nalgebra::{DMatrix, Matrix};
 use libm::*;
+use std::fs::File;
 
 
 pub struct MLP{
@@ -13,7 +14,6 @@ pub struct MLP{
     x: Vec<Vec<f32>>,
     deltas: Vec<Vec<f32>>
 }
-
 pub struct RBF{
     W: Vec<f32>,
     mu: Vec<f32>,
@@ -499,6 +499,40 @@ pub extern "C" fn gradient(model: &mut RBF, i: usize, flattened_dataset_inputs: 
         sum_result += 2.0 * distance * ( dataset_outputs[j] - pred ) * pred;
     }
     sum_result
+}
+
+#[no_mangle]
+pub extern "C" fn save_rbf_model(model: *mut RBF, filename: &str){
+    let mut model = unsafe{
+        model.as_mut().unwrap()
+    };
+    let mut file = File::create(filename).unwrap();
+    serde_json::to_writer(&file, &model);
+}
+
+#[no_mangle]
+pub extern "C" fn save_mlp_model(model: *mut MLP, filename: &str){
+    let mut model = unsafe{
+        model.as_mut().unwrap()
+    };
+    let mut file = File::create(filename).unwrap();
+    serde_json::to_writer(&file, &model);
+}
+
+#[no_mangle]
+pub extern "C" fn load_rbf_model(filename: &str)-> *mut RBF{
+    let file = File::open(filename).unwrap();
+    let mut model: RBF = serde_json::from_reader(&file).unwrap();
+    let model_leaked = Box::leak(Box::from(model));
+    model_leaked as *mut RBF
+}
+
+#[no_mangle]
+pub extern "C" fn load_mlp_model(filename: &str)-> *mut MLP{
+    let file = File::open(filename).unwrap();
+    let mut model: MLP = serde_json::from_reader(&file).unwrap();
+    let model_leaked = Box::leak(Box::from(model));
+    model_leaked as *mut MLP
 }
 
 #[no_mangle]
