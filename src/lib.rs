@@ -5,15 +5,18 @@ use std::iter::FromIterator;
 use std::borrow::Borrow;
 use nalgebra::{DMatrix, Matrix};
 use libm::*;
+use serde::{Serialize, Deserialize};
 use std::fs::File;
 
-
+#[derive(Serialize, Deserialize)]
 pub struct MLP{
     d: Vec<i32>,
     W: Vec<Vec<Vec<f32>>>,
     x: Vec<Vec<f32>>,
     deltas: Vec<Vec<f32>>
 }
+
+#[derive(Serialize, Deserialize)]
 pub struct RBF{
     W: Vec<f32>,
     mu: Vec<f32>,
