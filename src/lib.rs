@@ -5,6 +5,9 @@ use std::iter::FromIterator;
 use std::borrow::Borrow;
 use nalgebra::{DMatrix, Matrix};
 use libm::*;
+use itertools::Itertools;
+use osqp::{CscMatrix, Problem, Settings};
+use std::array;
 
 
 pub struct MLP{
@@ -317,6 +320,169 @@ pub extern "C" fn predict_mlp_model_regression(model: *mut MLP, sample_inputs: *
     result.as_mut_ptr()
 }
 
+
+
+#[no_mangle]
+pub extern "C" fn create_model_SVM(dataset_inputs: *const f32, dataset_expected_outputs: *const f32, dataset_inputs_len: i32, dataset_expected_outputs_len: i32, dataset_inputs_dimension: i32) -> *mut f64 {
+
+
+    let (dataset_inputs_slice, dataset_expected_outputs_slice) =
+        unsafe {
+            (from_raw_parts(dataset_inputs, dataset_inputs_len as usize),
+             from_raw_parts(dataset_expected_outputs, dataset_expected_outputs_len as usize))
+        };
+
+    //Convertion of data_inputs from vec f32 to vec f64
+    let mut dataset_inputs_vect_f64 = Vec::with_capacity(dataset_inputs_len as usize);
+
+    for i in 0..dataset_inputs_len{
+        dataset_inputs_vect_f64.push(f64::from(dataset_inputs_slice[i as usize]));
+    }
+
+    //Convertion of data_expected_outputs from vec f32 to vec f64
+    let mut dataset_expected_outputs_vect_f64 = Vec::with_capacity(dataset_expected_outputs_len as usize);
+
+    for i in 0..dataset_expected_outputs_len{
+        dataset_expected_outputs_vect_f64.push(f64::from(dataset_expected_outputs_slice[i as usize]));
+    }
+
+    //Creation of the BigMatrix which is used to construct the matix P of OSQP.
+    let mut BigMatrix:Vec<f64> = Vec::new();
+
+    //Creation of the transpose of dataset_inputs
+    let Xtranspose = DMatrix::from_iterator(dataset_inputs_dimension as usize, dataset_expected_outputs_len as usize, dataset_inputs_vect_f64.iter().cloned());
+
+    for i in 0..dataset_expected_outputs_len {
+        let Xl = DMatrix::from_iterator(1, dataset_inputs_dimension as usize, Xtranspose.column(i as usize).iter().cloned());
+        for j in 0..dataset_expected_outputs_len {
+            let Xc = DMatrix::from_iterator(1, dataset_inputs_dimension as usize, Xtranspose.column(j as usize).iter().cloned());
+            let XtX = &Xl*&Xc.transpose();
+            BigMatrix.push((dataset_expected_outputs_vect_f64[i as usize]*dataset_expected_outputs_vect_f64[j as usize]*&XtX.row(0)[0]));
+        }
+    }
+
+    //Define problem data
+    let mut P = Vec::new();
+
+    let mut O =0 as usize;
+    let mut E = dataset_expected_outputs_len as usize;
+    for i in 0..dataset_expected_outputs_len {
+        P.push(BigMatrix[O..E].to_vec());
+        O = E;
+        E+= dataset_expected_outputs_len as usize;
+    }
+
+    let mut A:Vec<Vec<f64>> = Vec::new();
+    let mut tmp = Vec::new();
+
+    A.push(dataset_expected_outputs_vect_f64.to_vec());
+
+    for r in 0..dataset_expected_outputs_len {
+        for i in 0..dataset_expected_outputs_len {
+            if r == i {
+                tmp.push(1.0);
+            } else {
+                tmp.push(0.0);
+            }
+        }
+        A.push(tmp.to_vec());
+        tmp.clear();
+    }
+
+    let mut q = Vec::with_capacity(dataset_expected_outputs_len as usize);
+
+    for i in 0..dataset_expected_outputs_len{
+        q.push(-1.0);
+    }
+
+    let mut l =Vec::with_capacity((dataset_expected_outputs_len+1) as usize);
+
+    for i in 0..dataset_expected_outputs_len +1{
+        l.push(0.0);
+    }
+
+    let mut u =Vec::with_capacity((dataset_expected_outputs_len+1) as usize);
+
+    u.push(0.0);
+    for i in 1..dataset_expected_outputs_len +1{
+        u.push(f64::MAX);
+    }
+
+    let q = q.as_slice();
+    let l = l.as_slice();
+    let u = u.as_slice();
+
+
+    // Extract the upper triangular elements of `P`
+    let P = CscMatrix::from(&P).into_upper_tri();
+    let A = CscMatrix::from(&A);
+
+    // Disable verbose output
+    let settings = Settings::default()
+        .verbose(false);
+
+
+    // Create an OSQP problem
+    let mut prob = Problem::new(P, q, A, l, u, &settings).expect("failed to setup problem");
+
+    // Solve problem
+    let result = prob.solve();
+
+    let alphas = result.x().unwrap();
+    let mut alphasY = Vec::new();
+
+    for i in 0..alphas.len(){
+        alphasY.push(alphas[i]*dataset_expected_outputs_vect_f64[i]);
+    }
+
+    let mut W:Vec<f64> = Vec::new();
+
+    for j in 0..dataset_inputs_dimension {
+        W.push(Xtranspose.row(j as usize).iter().enumerate().map(|(i, x)| x*alphasY[i]).sum());
+    }
+
+    let mut sum : f64=0.0;
+    let mut index= alphas.iter().position_max_by(|a, b| a.partial_cmp(b).unwrap()).unwrap();
+
+
+    for i in 0..dataset_inputs_dimension {
+        sum += W[i as usize]*dataset_inputs_vect_f64[(index* dataset_inputs_dimension as usize)+i as usize];
+    }
+
+    let W0 = (1.0/dataset_expected_outputs_vect_f64[index])-sum;
+
+    W.insert(0,W0);
+
+    W.as_mut_ptr()
+}
+
+#[no_mangle]
+pub extern "C" fn predict_SVM(model: *mut f64,dataset_inputs: *const f64, model_len:i32) -> f32 {
+
+
+    let (model_slice, dataset_inputs_slice) =
+        unsafe {
+            (from_raw_parts_mut(model, model_len as usize),
+             from_raw_parts(dataset_inputs, model_len as usize))
+        };
+
+    let model_matrix = DMatrix::from_iterator( 1,model_len as usize, model_slice.iter().cloned());
+    let dataset_inputs_matrix = DMatrix::from_iterator( model_len as usize,1, dataset_inputs_slice.iter().cloned());
+
+    let mut pred = &model_matrix*&dataset_inputs_matrix;
+    let mut res:f32;
+
+    if pred.row(0)[0]>=0.0{
+        res = 1.0 as f32;
+    }else{
+        res = -1.0 as f32;
+    }
+
+    res
+
+}
+
+
 #[no_mangle]
 pub extern "C" fn destroy_array(arr: *mut f32, arr_size: i32) {
     unsafe {
@@ -325,8 +491,18 @@ pub extern "C" fn destroy_array(arr: *mut f32, arr_size: i32) {
 }
 
 #[no_mangle]
+pub extern "C" fn destroy_array_double(arr: *mut f64, arr_size: i32) {
+    unsafe {
+        let _ = Vec::from_raw_parts(arr, arr_size as usize, arr_size as usize);
+    }
+}
+
+
+#[no_mangle]
 pub extern "C" fn destroy_model(model: *mut MLP){
     unsafe{
         let _ = Box::from_raw(model);
     }
 }
+
+
