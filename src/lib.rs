@@ -430,7 +430,7 @@ pub extern "C" fn evaluate_clusters(model: &mut RBF, flattened_dataset_inputs: &
     clusters
 }
 #[no_mangle]
-pub extern "C" fn lloyd2(model: *mut RBF, flattened_dataset_inputs: *const f32, inputs_len: i32, iterations: i32){
+pub extern "C" fn lloyd(model: *mut RBF, flattened_dataset_inputs: *const f32, inputs_len: i32, iterations: i32){
     let mut model = unsafe{
         model.as_mut().unwrap()
     };
@@ -447,76 +447,6 @@ pub extern "C" fn lloyd2(model: *mut RBF, flattened_dataset_inputs: *const f32, 
             for j in 0..model.input_dim{
                 model.mu[mu_count] = new_center[j];
                 mu_count += 1;
-            }
-        }
-    }
-}
-#[no_mangle]
-pub extern "C" fn lloyd(model: *mut RBF, flattened_dataset_inputs: *const f32, inputs_len: i32, iterations: i32 ) {
-    let mut model = unsafe{
-        model.as_mut().unwrap()
-    };
-    let flattened_dataset_inputs = unsafe{
-        from_raw_parts(flattened_dataset_inputs, inputs_len as usize)
-    };
-
-    for _ in 0..iterations {
-        let mut clusters:Vec<Vec<f32>> = Vec::new();
-        for i in 0..(model.K as usize){
-            let mut cluster = Vec::new();
-            clusters.push(cluster);
-        }
-
-        for i in (0..(inputs_len as usize)).step_by(model.input_dim) {
-            let mut distance_points = Vec::with_capacity(model.mu.len());
-            let mut sample_inputs = &flattened_dataset_inputs[i..i + (model.input_dim)];
-            let mut point_coord = Vec::new();
-
-            for j in (0..model.mu.len()).step_by(model.input_dim) {
-                let mut sample_mu = &model.mu[j..j + model.input_dim];
-                let mut distance = 0.0f32;
-                point_coord = Vec::new();
-
-                for k in 0..model.input_dim {
-                    distance += powf((sample_inputs[k] - sample_mu[k]), 2.0);
-                    point_coord.push(sample_inputs[k]);
-                }
-
-                distance = sqrtf(distance);
-                //distance = powf(distance, 2.0);
-                distance_points.push(distance);
-            }
-            let mut min = [distance_points[0], 0.0];
-            for l in 1..(distance_points.len()) {
-                if distance_points[l] < min[0] {
-                    min[0] = distance_points[l];
-                    min[1] = l as f32;
-                }
-            }
-            for n in 0..point_coord.len(){
-                clusters[(min[1] as usize)].push(point_coord[n]);
-            }
-        }
-
-        let mut m = 0;
-        for i in 0..clusters.len() {
-            let mut point = Vec::with_capacity(model.input_dim);
-            for j in 0..model.input_dim {
-                point.push(0.0f32);
-            }
-            let mut cluster = &clusters[i];
-            for j in 0..cluster.len() {
-                for k in 0..point.len() {
-                    point[k] += cluster[j];
-                }
-            }
-
-            for l in 0..point.len() {
-                point[l] = point[l] / (cluster.len() as f32);
-            }
-            for k in 0..model.input_dim{
-                model.mu[m] = point[k];
-                m+=1;
             }
         }
     }
