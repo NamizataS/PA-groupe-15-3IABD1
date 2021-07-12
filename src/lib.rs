@@ -7,6 +7,8 @@ use nalgebra::{DMatrix, Matrix};
 use libm::*;
 use serde::{Serialize, Deserialize};
 use std::fs::File;
+use std::os::raw::c_char;
+use std::ffi::CStr;
 
 #[derive(Serialize, Deserialize)]
 pub struct MLP{
@@ -287,7 +289,6 @@ pub extern "C" fn train_stochastic_gradient_backpropagation(model: &mut MLP, fla
             }
         }
     }
-
 }
 
 #[no_mangle]
@@ -299,6 +300,13 @@ pub extern "C" fn predict_mlp_model_classification(model: *mut MLP, sample_input
     let L = (model.d.len() - 1) as usize;
     let i = (model.d[L] + 1) as usize;
     let mut result:&mut[f32] = &mut model.x[L][1..i];
+    for i in 0..result.len(){
+        if result[i] >= 0.0{
+            result[i] = 1.0;
+        } else{
+            result[i] = -1.0;
+        }
+    }
     result.as_mut_ptr()
 }
 
@@ -437,9 +445,12 @@ pub extern "C" fn lloyd(model: *mut RBF, flattened_dataset_inputs: *const f32, i
     let mut flattened_dataset_inputs = unsafe{
         from_raw_parts(flattened_dataset_inputs, inputs_len as usize)
     };
+    println!("mus before: {:?}", model.mu);
     let mut clusters:Vec<Vec<f32>>;
-    for _ in 0..iterations{
+    let mut old_mu:Vec<f32>;
+    loop {
         clusters = evaluate_clusters(model, flattened_dataset_inputs);
+        old_mu = model.mu.clone();
         let mut mu_count:usize = 0;
         for i in 0..(model.K as usize){
             let mut cluster = clusters[i].to_vec();
@@ -449,7 +460,15 @@ pub extern "C" fn lloyd(model: *mut RBF, flattened_dataset_inputs: *const f32, i
                 mu_count += 1;
             }
         }
+        if has_converged(old_mu, model.mu.clone()){
+            break;
+        }
     }
+
+    println!("mu after {:?}", model.mu);
+    /*for _ in 0..iterations{
+
+    }*/
 }
 
 #[no_mangle]
@@ -463,18 +482,12 @@ pub extern "C" fn train_rbf_model_regression(model: &mut RBF, flattened_dataset_
     };
     for mut i in (0..(dataset_inputs_len as usize)).step_by(model.input_dim){
         let mut sample_inputs = &flattened_dataset_inputs[i..i+(model.input_dim)];
-        let mut gamma_count = 0 as usize;
         for mut j in (0..(model.mu.len())).step_by(model.input_dim){
-            let mut distance = 0.0f32;
             let mut sample_mu = &model.mu[j..j+model.input_dim];
-            for k in 0..model.input_dim{
-                distance += powf((sample_inputs[k]-sample_mu[k]), 2.0);
-            }
-            distance = sqrtf(distance);
+            let mut distance = euclidean_distance(sample_inputs,sample_mu);
             distance = powf(distance, 2.0);
             let mut value = expf(-model.gamma * distance);
             phi.push(value);
-            gamma_count += 1;
         }
     }
     let phi = DMatrix::from_iterator(model.sample_count, model.K as usize, phi.iter().cloned());
@@ -517,8 +530,19 @@ pub extern "C" fn predict_rbf_model_classification(model: *mut RBF, sample_input
     }
     rslt
 }
+
 #[no_mangle]
-pub extern "C" fn train_rbf_model_classification(model: *mut RBF, flattened_dataset_inputs: *mut f32, dataset_outputs: *mut f32, dataset_inputs_len: i32, dataset_outputs_len: i32, iterations: i32, learning_rate: f32){
+pub extern "C" fn get_mse_rbf(model: &mut RBF, dataset_inputs: &[f32], dataset_outputs: &[f32]) ->f32{
+    let mut sum_rslt = 0.0f32;
+    for i in 0..model.sample_count{
+        let mut sample_inputs = &dataset_inputs[i*model.input_dim..(i+1)*model.input_dim];
+        let mut pred = predict_rbf_model_classification(model, sample_inputs.as_ptr());
+        sum_rslt += powf(pred - dataset_outputs[i], 2.0);
+    }
+    sum_rslt / (model.sample_count as f32)
+}
+#[no_mangle]
+pub extern "C" fn train_rbf_model_classification(model: *mut RBF, flattened_dataset_inputs: *mut f32, dataset_outputs: *mut f32, dataset_inputs_len: i32, dataset_outputs_len: i32, iterations: i32, learning_rate: f32)->*mut f32{
     let mut model = unsafe{
         model.as_mut().unwrap()
     };
@@ -528,8 +552,8 @@ pub extern "C" fn train_rbf_model_classification(model: *mut RBF, flattened_data
     let mut dataset_outputs = unsafe{
         from_raw_parts_mut(dataset_outputs, dataset_outputs_len as usize)
     };
-    println!("mu are {:?}", model.mu);
     let mut phi:Vec<f32> = Vec::new();
+    let mut loss = Vec::new();
     for i in 0..model.sample_count{
         let mut sample_inputs = &flattened_dataset_inputs[i*model.input_dim..(i+1)*model.input_dim];
         for j in 0..(model.K as usize){
@@ -552,8 +576,12 @@ pub extern "C" fn train_rbf_model_classification(model: *mut RBF, flattened_data
         for i in 0..model.W.len(){
             model.W[i] += learning_rate * (yk - gXk) * Xk[i];
         }
+        loss.push(get_mse_rbf(model, flattened_dataset_inputs, dataset_outputs));
     }
     model.gamma -= learning_rate * gradient(model, flattened_dataset_inputs.as_mut_ptr(), dataset_inputs_len, dataset_outputs.as_mut_ptr(), dataset_outputs_len, true);
+    let boxed_slice = loss.into_boxed_slice();
+    let loss_ref = Box::leak(boxed_slice);
+    loss_ref.as_mut_ptr()
 }
 #[no_mangle]
 pub extern "C" fn train_em_rbf_model_regression(model: *mut RBF, flattened_dataset_inputs: *mut f32, dataset_outputs: *mut f32, dataset_inputs_len: i32, dataset_outputs_len: i32, output_dim: i32, learning_rate: f32){
@@ -606,25 +634,34 @@ fn euclidean_distance(sample_inputs: &[f32], sample_mu: &[f32])->f32{
 }
 
 #[no_mangle]
-pub extern "C" fn save_rbf_model(model: *mut RBF, filename: &str){
+pub extern "C" fn save_rbf_model(model: *mut RBF, filename: *const c_char){
     let mut model = unsafe{
         model.as_mut().unwrap()
+    };
+    let filename = unsafe{
+        CStr::from_ptr(filename).to_str().unwrap()
     };
     let mut file = File::create(filename).unwrap();
     serde_json::to_writer(&file, &model);
 }
 
 #[no_mangle]
-pub extern "C" fn save_mlp_model(model: *mut MLP, filename: &str){
+pub extern "C" fn save_mlp_model(model: *mut MLP, filename: *const c_char){
     let mut model = unsafe{
         model.as_mut().unwrap()
+    };
+    let filename = unsafe{
+        CStr::from_ptr(filename).to_str().unwrap()
     };
     let mut file = File::create(filename).unwrap();
     serde_json::to_writer(&file, &model);
 }
 
 #[no_mangle]
-pub extern "C" fn load_rbf_model(filename: &str)-> *mut RBF{
+pub extern "C" fn load_rbf_model(filename: *const c_char)-> *mut RBF{
+    let filename = unsafe{
+        CStr::from_ptr(filename).to_str().unwrap()
+    };
     let file = File::open(filename).unwrap();
     let mut model: RBF = serde_json::from_reader(&file).unwrap();
     let model_leaked = Box::leak(Box::from(model));
@@ -632,7 +669,10 @@ pub extern "C" fn load_rbf_model(filename: &str)-> *mut RBF{
 }
 
 #[no_mangle]
-pub extern "C" fn load_mlp_model(filename: &str)-> *mut MLP{
+pub extern "C" fn load_mlp_model(filename: *const c_char)-> *mut MLP{
+    let filename = unsafe{
+        CStr::from_ptr(filename).to_str().unwrap()
+    };
     let file = File::open(filename).unwrap();
     let mut model: MLP = serde_json::from_reader(&file).unwrap();
     let model_leaked = Box::leak(Box::from(model));
