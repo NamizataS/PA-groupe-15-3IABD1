@@ -4,6 +4,7 @@ use std::slice::{from_raw_parts, from_raw_parts_mut};
 use std::iter::FromIterator;
 use std::borrow::Borrow;
 use nalgebra::{DMatrix, Matrix};
+use ndarray::{Array1, Array2, ArrayBase, Axis, Data, Ix1, Ix2, Array};
 use libm::*;
 use itertools::Itertools;
 use osqp::{CscMatrix, Problem, Settings};
@@ -321,9 +322,8 @@ pub extern "C" fn predict_mlp_model_regression(model: *mut MLP, sample_inputs: *
 }
 
 
-
 #[no_mangle]
-pub extern "C" fn create_model_SVM(dataset_inputs: *const f32, dataset_expected_outputs: *const f32, dataset_inputs_len: i32, dataset_expected_outputs_len: i32, dataset_inputs_dimension: i32) -> *mut f64 {
+pub extern "C" fn train_model_SVM(dataset_inputs: *const f32, dataset_expected_outputs: *const f32, dataset_inputs_len: i32, dataset_expected_outputs_len: i32, dataset_inputs_dimension: i32) -> *mut f64 {
 
 
     let (dataset_inputs_slice, dataset_expected_outputs_slice) =
@@ -349,6 +349,7 @@ pub extern "C" fn create_model_SVM(dataset_inputs: *const f32, dataset_expected_
     //Creation of the BigMatrix which is used to construct the matix P of OSQP.
     let mut BigMatrix:Vec<f64> = Vec::new();
 
+
     //Creation of the transpose of dataset_inputs
     let Xtranspose = DMatrix::from_iterator(dataset_inputs_dimension as usize, dataset_expected_outputs_len as usize, dataset_inputs_vect_f64.iter().cloned());
 
@@ -356,8 +357,8 @@ pub extern "C" fn create_model_SVM(dataset_inputs: *const f32, dataset_expected_
         let Xl = DMatrix::from_iterator(1, dataset_inputs_dimension as usize, Xtranspose.column(i as usize).iter().cloned());
         for j in 0..dataset_expected_outputs_len {
             let Xc = DMatrix::from_iterator(1, dataset_inputs_dimension as usize, Xtranspose.column(j as usize).iter().cloned());
-            let XtX = &Xl*&Xc.transpose();
-            BigMatrix.push((dataset_expected_outputs_vect_f64[i as usize]*dataset_expected_outputs_vect_f64[j as usize]*&XtX.row(0)[0]));
+            let XtX = &Xl * &Xc.transpose();
+            BigMatrix.push((dataset_expected_outputs_vect_f64[i as usize] * dataset_expected_outputs_vect_f64[j as usize] * &XtX.row(0)[0]));
         }
     }
 
@@ -455,6 +456,217 @@ pub extern "C" fn create_model_SVM(dataset_inputs: *const f32, dataset_expected_
 
     W.as_mut_ptr()
 }
+
+#[no_mangle]
+pub extern "C" fn radial_base_kernel(xn:*mut f64, xm:*mut f64,xn_len:usize,xm_len:usize) ->f64{
+
+    let (xn_slice, xm_slice) =
+        unsafe {
+            (from_raw_parts(xn, xn_len as usize),
+             from_raw_parts(xm, xm_len as usize))
+        };
+
+
+    let Xn = DMatrix::from_iterator( 1,xn_len as usize, xn_slice.iter().cloned());
+    let Xm = DMatrix::from_iterator( 1,xm_len as usize, xm_slice.iter().cloned());
+
+
+    let XnXn = &Xn*&Xn.transpose();
+    let XmXm = &Xm*&Xm.transpose();
+    let XnXm = &Xn*&Xm.transpose();
+
+    exp(-1.0*(XnXn.row(0)[0]))*exp(-1.0*(XmXm.row(0)[0]))*exp(2.0*(XnXm.row(0)[0]))
+
+}
+
+pub extern "C" fn radial_base_kernel_trick(xn:*mut f64, xm:*mut f64,xn_len:usize,xm_len:usize) ->f64{
+
+    let (xn_slice, xm_slice) =
+        unsafe {
+            (from_raw_parts(xn, xn_len as usize),
+             from_raw_parts(xm, xm_len as usize))
+        };
+
+    (expf(-1.0 * (Array::from(xn_slice.to_vec()).dot(&Array::from(xn_slice.to_vec()))) as f32)
+        * expf(-1.0 * (Array::from(xm_slice.to_vec()).dot(&Array::from(xm_slice.to_vec())))  as f32)
+        * expf(2.0 * (Array::from(xn_slice.to_vec()).dot(&Array::from(xm_slice.to_vec()))) as f32)) as f64
+
+}
+
+
+
+#[no_mangle]
+pub extern "C" fn train_model_SVM_trick(dataset_inputs: *const f32, dataset_expected_outputs: *const f32, dataset_inputs_len: i32, dataset_expected_outputs_len: i32, dataset_inputs_dimension: i32) -> *mut f64 {
+
+
+    let (dataset_inputs_slice, dataset_expected_outputs_slice) =
+        unsafe {
+            (from_raw_parts(dataset_inputs, dataset_inputs_len as usize),
+             from_raw_parts(dataset_expected_outputs, dataset_expected_outputs_len as usize))
+        };
+
+    //Convertion of data_inputs from vec f32 to vec f64
+    let mut dataset_inputs_vect_f64 = Vec::with_capacity(dataset_inputs_len as usize);
+
+    for i in 0..dataset_inputs_len{
+        dataset_inputs_vect_f64.push(f64::from(dataset_inputs_slice[i as usize]));
+    }
+
+    //Convertion of data_expected_outputs from vec f32 to vec f64
+    let mut dataset_expected_outputs_vect_f64 = Vec::with_capacity(dataset_expected_outputs_len as usize);
+
+    for i in 0..dataset_expected_outputs_len{
+        dataset_expected_outputs_vect_f64.push(f64::from(dataset_expected_outputs_slice[i as usize]));
+    }
+
+    //Creation of the BigMatrix which is used to construct the matix P of OSQP.
+    let mut BigMatrix:Vec<f64> = Vec::new();
+
+
+    //Creation of the transpose of dataset_inputs
+    let Xtranspose = DMatrix::from_iterator(dataset_inputs_dimension as usize, dataset_expected_outputs_len as usize, dataset_inputs_vect_f64.iter().cloned());
+
+    let mut Xn :Vec<f64>= Vec::with_capacity(dataset_inputs_dimension as usize);
+    let mut Xm:Vec<f64>= Vec::with_capacity(dataset_inputs_dimension as usize);
+
+    for i in 0..dataset_expected_outputs_len {
+        for a in 0..dataset_inputs_dimension{
+            Xn.push(Xtranspose.column(i as usize)[a as usize]);
+        }
+        for j in 0..dataset_expected_outputs_len {
+            for a in 0..dataset_inputs_dimension{
+                Xm.push(Xtranspose.column(j as usize)[a as usize]);
+            }
+            BigMatrix.push((dataset_expected_outputs_vect_f64[i as usize]* dataset_expected_outputs_vect_f64[j as usize]*radial_base_kernel(Xn.as_mut_ptr(),Xm.as_mut_ptr(),dataset_inputs_dimension as usize,dataset_inputs_dimension as usize)));
+            Xm.clear();
+        }
+        Xn.clear();
+    }
+
+    //Define problem data
+    let mut P = Vec::new();
+
+    let mut O =0 as usize;
+    let mut E = dataset_expected_outputs_len as usize;
+    for i in 0..dataset_expected_outputs_len {
+        P.push(BigMatrix[O..E].to_vec());
+        O = E;
+        E+= dataset_expected_outputs_len as usize;
+    }
+
+    let mut A:Vec<Vec<f64>> = Vec::new();
+    let mut tmp = Vec::new();
+
+    A.push(dataset_expected_outputs_vect_f64.to_vec());
+
+    for r in 0..dataset_expected_outputs_len {
+        for i in 0..dataset_expected_outputs_len {
+            if r == i {
+                tmp.push(1.0);
+            } else {
+                tmp.push(0.0);
+            }
+        }
+        A.push(tmp.to_vec());
+        tmp.clear();
+    }
+
+    let mut q = Vec::with_capacity(dataset_expected_outputs_len as usize);
+
+    for i in 0..dataset_expected_outputs_len{
+        q.push(-1.0);
+    }
+
+    let mut l =Vec::with_capacity((dataset_expected_outputs_len+1) as usize);
+
+    for i in 0..dataset_expected_outputs_len +1{
+        l.push(0.0);
+    }
+
+    let mut u =Vec::with_capacity((dataset_expected_outputs_len+1) as usize);
+
+    u.push(0.0);
+    for i in 1..dataset_expected_outputs_len +1{
+        u.push(f64::MAX);
+    }
+
+    let q = q.as_slice();
+    let l = l.as_slice();
+    let u = u.as_slice();
+
+
+    // Extract the upper triangular elements of `P`
+    let P = CscMatrix::from(&P).into_upper_tri();
+    let A = CscMatrix::from(&A);
+
+    // Disable verbose output
+    let settings = Settings::default()
+        .verbose(false);
+
+
+    // Create an OSQP problem
+    let mut prob = Problem::new(P, q, A, l, u, &settings).expect("failed to setup problem");
+
+    // Solve problem
+    let result = prob.solve();
+
+    let alphas = result.x().unwrap();
+    let mut alphasY = Vec::new();
+
+    for i in 0..alphas.len(){
+        alphasY.push(alphas[i]*dataset_expected_outputs_vect_f64[i]);
+    }
+
+    let mut sum : f64=0.0;
+
+    let mut index= alphas.iter().position_max_by(|a, b| a.partial_cmp(b).unwrap()).unwrap();
+
+    let mut Xk= Vec::with_capacity(dataset_inputs_dimension as usize);
+    let mut XSavPov =  Vec::with_capacity(dataset_inputs_dimension as usize);
+
+    for a in 0..dataset_inputs_dimension{
+        XSavPov.push(Xtranspose.column(index as usize)[a as usize]);
+    }
+
+    for i in 0..dataset_expected_outputs_len {
+        //sum += W[i]* dataset_inputs[(index* dataset_inputs_dimension)+i];
+        for a in 0..dataset_inputs_dimension{
+            Xk.push(Xtranspose.column(i as usize)[a as usize]);
+        }
+        sum+=alphas[i as usize]*dataset_expected_outputs_vect_f64[i as usize]*radial_base_kernel(Xk.as_mut_ptr(),XSavPov.as_mut_ptr(),dataset_inputs_dimension as usize,dataset_inputs_dimension as usize);
+        Xk.clear();
+    }
+
+    let W0 = (1.0/ dataset_expected_outputs_vect_f64[index])-sum;
+
+    let mut W:Vec<f64> = Vec::new();
+
+    let mut Xc = Vec::new();
+    let mut sumW = 0.0;
+
+    let mut dataset_inputs_vec = Vec::new();
+    for i in 0..dataset_inputs_len{
+        dataset_inputs_vec.push(dataset_inputs_vect_f64[i as usize] as f64);
+    }
+
+    for j in 0..dataset_expected_outputs_len {
+        for a in 0..dataset_inputs_dimension {
+            Xc.push(Xtranspose.column(j as usize)[a as usize]);
+        }
+
+        sumW += alphas[j as usize]*dataset_expected_outputs_vect_f64[j as usize]*radial_base_kernel_trick(Xc.as_mut_ptr(),dataset_inputs_vect_f64.as_mut_ptr(),dataset_inputs_dimension as usize,dataset_inputs_len as usize);
+        Xc.clear();
+    }
+
+    W.push((sumW+W0));
+
+    W.insert(0,W0);
+
+    W.as_mut_ptr()
+}
+
+
+
 
 #[no_mangle]
 pub extern "C" fn predict_SVM(model: *mut f64,dataset_inputs: *const f64, model_len:i32) -> f32 {
