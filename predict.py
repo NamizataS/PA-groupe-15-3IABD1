@@ -39,7 +39,6 @@ class Predict:
         prediction = [my_lib.predict_rbf_model_classification(model_action, sample_inputs_native),
                       my_lib.predict_rbf_model_classification(model_comedy, sample_inputs_native),
                       my_lib.predict_rbf_model_classification(model_horror, sample_inputs_native)]
-        os.remove(self.image_path)
         return prediction
 
     def predict_mlp(self):
