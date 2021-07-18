@@ -13,15 +13,45 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3001ee7c-2b66-450d-bb56-ea9dbde155de" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/PA-groupe-15-3IABD1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/PA-groupe-15-3IABD1.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Notebook_CAS_DE_TESTS_GROUPE_15-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/Notebook_CAS_DE_TESTS_GROUPE_15-checkpoint.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/test_dataset-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/test_dataset-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Notebook_CAS_DE_TESTS_GROUPE_15.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Notebook_CAS_DE_TESTS_GROUPE_15.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_dataset.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/test_dataset.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/action/Ant-Man.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/action/Ant-Man_and_the_Wasp.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/action/Ava.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/action/Avengers_Infinity_War.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/action/Baby_Driver.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/action/Bad_Boys.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/action/Bad_Boys_for_Life.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/action/Captain_America_The_Winter_Soldier.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/comedie/Accepted.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/comedie/After_the_Fox.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/comedie/Airplane!.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/comedie/Aladdin.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/comedie/Almost_Famous.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/comedie/American_Wedding.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/comedie/American_Women.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/comedie/Angus,_Thongs_and_Perfect_Snogging.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/action/13_Hours.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/action/2012.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/action/21_Bridges.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/action/21_Jump_Street.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/action/47_Ronin.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/action/48_Hrs.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/action/A_Better_Tomorrow.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/action/A_Knight's_Tale.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/action/Above_Suspicion.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/action/Alexander.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/comedie/17_Again.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/comedie/21_Jump_Street.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/comedie/24_Hour_Party_People.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/comedie/30_Minutes_or_Less.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/comedie/3_Idiots.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/comedie/500_Days_of_Summer.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/comedie/50_First_Dates.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/comedie/8_Women.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/comedie/9_mois_ferme.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/comedie/_Hot_Fuzz.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_dataset.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -219,6 +249,7 @@
       <workItem from="1624017632304" duration="586000" />
       <workItem from="1624107597368" duration="442000" />
       <workItem from="1624116307942" duration="25000" />
+      <workItem from="1626604601615" duration="284000" />
     </task>
     <servers />
   </component>
