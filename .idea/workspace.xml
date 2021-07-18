@@ -14,9 +14,56 @@
   <component name="ChangeListManager">
     <list default="true" id="3001ee7c-2b66-450d-bb56-ea9dbde155de" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Notebook_CAS_DE_TESTS_GROUPE_15-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/Notebook_CAS_DE_TESTS_GROUPE_15-checkpoint.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Notebook___CAS_DE_TESTS_RBF_SVM-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/Notebook___CAS_DE_TESTS_RBF_SVM-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/test_dataset-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/test_dataset-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Notebook_CAS_DE_TESTS_GROUPE_15.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Notebook_CAS_DE_TESTS_GROUPE_15.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Notebook___CAS_DE_TESTS_RBF_SVM.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Notebook___CAS_DE_TESTS_RBF_SVM.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/action/Ant-Man.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/action/Ant-Man_and_the_Wasp.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/action/Ava.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/action/Avengers_Infinity_War.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/action/Baby_Driver.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/action/Bad_Boys.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/action/Bad_Boys_for_Life.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/action/Captain_America_The_Winter_Soldier.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/comedie/Accepted.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/comedie/After_the_Fox.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/comedie/Airplane!.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/comedie/Aladdin.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/comedie/Almost_Famous.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/comedie/American_Wedding.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/comedie/American_Women.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/comedie/Angus,_Thongs_and_Perfect_Snogging.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/action/13_Hours.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/action/2012.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/action/21_Bridges.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/action/21_Jump_Street.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/action/47_Ronin.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/action/48_Hrs.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/action/A_Better_Tomorrow.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/action/A_Knight's_Tale.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/action/Above_Suspicion.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/action/Alexander.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/comedie/17_Again.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/comedie/21_Jump_Street.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/comedie/24_Hour_Party_People.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/comedie/30_Minutes_or_Less.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/comedie/3_Idiots.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/comedie/500_Days_of_Summer.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/comedie/50_First_Dates.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/comedie/8_Women.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/comedie/9_mois_ferme.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/train/comedie/_Hot_Fuzz.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/predict.py" beforeDir="false" afterPath="$PROJECT_DIR$/predict.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/display_results.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/display_results.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/result.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/result.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_dataset.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/test_dataset.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_dataset.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,12 +77,18 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Rust File" />
+        <option value="HTML File" />
         <option value="Python Script" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="InvalidFacetManager">
+    <ignored-facets>
+      <facet id="PA-groupe-15-3IABD1/invalid/Python facet" />
+    </ignored-facets>
   </component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="fvhgdmrg" />
@@ -47,6 +100,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="cf.first.check.clang-format" value="false" />
@@ -60,22 +114,7 @@
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Cargo.build">
-    <configuration name="Run PA-groupe-15-3IABD1" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="run --package PA-groupe-15-3IABD1 --bin PA-groupe-15-3IABD1" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <option name="channel" value="DEFAULT" />
-      <option name="requiredFeatures" value="true" />
-      <option name="allFeatures" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <envs />
-      <option name="isRedirectInput" value="false" />
-      <option name="redirectInputPath" value="" />
-      <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Python.app">
     <configuration name="Test" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="test --package PA-groupe-15-3IABD1 --lib tests" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -128,7 +167,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="test_bug" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="PA-groupe-15-3IABD1" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -141,7 +180,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_bug.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -172,11 +211,33 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="test_rbf" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="PA-groupe-15-3IABD1" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_rbf.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.build" />
-        <item itemvalue="Python.test" />
         <item itemvalue="Python.app" />
+        <item itemvalue="Python.test_bug" />
+        <item itemvalue="Python.test_rbf" />
       </list>
     </recent_temporary>
   </component>
@@ -242,10 +303,34 @@
       <workItem from="1625514706889" duration="2722000" />
       <workItem from="1625572837598" duration="685000" />
       <workItem from="1625586321418" duration="1702000" />
+      <workItem from="1625678692039" duration="577000" />
+      <workItem from="1625733217842" duration="2603000" />
+      <workItem from="1625834413218" duration="160000" />
+      <workItem from="1625834679666" duration="2724000" />
+      <workItem from="1625948043436" duration="735000" />
+      <workItem from="1625995608701" duration="194000" />
+      <workItem from="1626001007921" duration="1272000" />
+      <workItem from="1626023791356" duration="2192000" />
+      <workItem from="1626110508665" duration="3018000" />
+      <workItem from="1626168513267" duration="2244000" />
+      <workItem from="1626271693773" duration="1747000" />
+      <workItem from="1626279827525" duration="1097000" />
+      <workItem from="1626344573283" duration="2509000" />
+      <workItem from="1626353803299" duration="326000" />
+      <workItem from="1626354774825" duration="19537000" />
+      <workItem from="1626469485460" duration="3850000" />
+      <workItem from="1626523634506" duration="9367000" />
+      <workItem from="1626546503539" duration="17000" />
+      <workItem from="1626546970614" duration="7555000" />
+      <workItem from="1626599286328" duration="4856000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/PA_groupe_15_3IABD1$app.coverage" NAME="app Coverage Results" MODIFIED="1626604003534" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/PA_groupe_15_3IABD1$test_bug.coverage" NAME="test_bug Coverage Results" MODIFIED="1626601740667" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
