@@ -18,6 +18,12 @@ pub struct MLP{
     deltas: Vec<Vec<f32>>
 }
 
+pub struct SVM{
+    X: Vec<f64>,
+    Y: Vec<f64>,
+    W0: f64,
+    alphas: Vec<f64>
+}
 
 #[no_mangle]
 pub extern "C" fn create_model(x: i32) -> *mut f32{
@@ -322,6 +328,7 @@ pub extern "C" fn predict_mlp_model_regression(model: *mut MLP, sample_inputs: *
 }
 
 
+
 #[no_mangle]
 pub extern "C" fn train_model_SVM(dataset_inputs: *const f32, dataset_expected_outputs: *const f32, dataset_inputs_len: i32, dataset_expected_outputs_len: i32, dataset_inputs_dimension: i32) -> *mut f64 {
 
@@ -457,6 +464,35 @@ pub extern "C" fn train_model_SVM(dataset_inputs: *const f32, dataset_expected_o
     W.as_mut_ptr()
 }
 
+
+
+#[no_mangle]
+pub extern "C" fn predict_SVM(model: *mut f64,dataset_inputs: *const f64, model_len:i32) -> f32 {
+
+
+    let (model_slice, dataset_inputs_slice) =
+        unsafe {
+            (from_raw_parts_mut(model, model_len as usize),
+             from_raw_parts(dataset_inputs, model_len as usize))
+        };
+
+    let model_matrix = DMatrix::from_iterator( 1,model_len as usize, model_slice.iter().cloned());
+    let dataset_inputs_matrix = DMatrix::from_iterator( model_len as usize,1, dataset_inputs_slice.iter().cloned());
+
+    let mut pred = &model_matrix*&dataset_inputs_matrix;
+    let mut res:f32;
+
+    if pred.row(0)[0]>=0.0{
+        res = 1.0 as f32;
+    }else{
+        res = -1.0 as f32;
+    }
+
+    res
+
+}
+
+
 #[no_mangle]
 pub extern "C" fn radial_base_kernel(xn:*mut f64, xm:*mut f64,xn_len:usize,xm_len:usize) ->f64{
 
@@ -479,24 +515,9 @@ pub extern "C" fn radial_base_kernel(xn:*mut f64, xm:*mut f64,xn_len:usize,xm_le
 
 }
 
-pub extern "C" fn radial_base_kernel_trick(xn:*mut f64, xm:*mut f64,xn_len:usize,xm_len:usize) ->f64{
-
-    let (xn_slice, xm_slice) =
-        unsafe {
-            (from_raw_parts(xn, xn_len as usize),
-             from_raw_parts(xm, xm_len as usize))
-        };
-
-    (expf(-1.0 * (Array::from(xn_slice.to_vec()).dot(&Array::from(xn_slice.to_vec()))) as f32)
-        * expf(-1.0 * (Array::from(xm_slice.to_vec()).dot(&Array::from(xm_slice.to_vec())))  as f32)
-        * expf(2.0 * (Array::from(xn_slice.to_vec()).dot(&Array::from(xm_slice.to_vec()))) as f32)) as f64
-
-}
-
-
 
 #[no_mangle]
-pub extern "C" fn train_model_SVM_trick(dataset_inputs: *const f32, dataset_expected_outputs: *const f32, dataset_inputs_len: i32, dataset_expected_outputs_len: i32, dataset_inputs_dimension: i32) -> *mut f64 {
+pub extern "C" fn creat_model_SVM_trick(dataset_inputs: *const f32, dataset_expected_outputs: *const f32, dataset_inputs_len: i32, dataset_expected_outputs_len: i32, dataset_inputs_dimension: i32) -> *mut SVM {
 
 
     let (dataset_inputs_slice, dataset_expected_outputs_slice) =
@@ -639,61 +660,76 @@ pub extern "C" fn train_model_SVM_trick(dataset_inputs: *const f32, dataset_expe
 
     let W0 = (1.0/ dataset_expected_outputs_vect_f64[index])-sum;
 
-    let mut W:Vec<f64> = Vec::new();
+    let mut alphas_vec = Vec::new();
 
-    let mut Xc = Vec::new();
-    let mut sumW = 0.0;
-
-    let mut dataset_inputs_vec = Vec::new();
-    for i in 0..dataset_inputs_len{
-        dataset_inputs_vec.push(dataset_inputs_vect_f64[i as usize] as f64);
+    for i in 0..dataset_expected_outputs_len{
+        alphas_vec.push(alphas[i as usize]);
     }
 
-    for j in 0..dataset_expected_outputs_len {
-        for a in 0..dataset_inputs_dimension {
-            Xc.push(Xtranspose.column(j as usize)[a as usize]);
-        }
+    let model = SVM {
+        X: dataset_inputs_vect_f64,
+        Y: dataset_expected_outputs_vect_f64,
+        W0,
+        alphas: alphas_vec
+    };
 
-        sumW += alphas[j as usize]*dataset_expected_outputs_vect_f64[j as usize]*radial_base_kernel_trick(Xc.as_mut_ptr(),dataset_inputs_vect_f64.as_mut_ptr(),dataset_inputs_dimension as usize,dataset_inputs_len as usize);
-        Xc.clear();
-    }
+    let model_leaked = Box::leak(Box::from(model));
+    model_leaked as *mut SVM
 
-    W.push((sumW+W0));
-
-    W.insert(0,W0);
-
-    W.as_mut_ptr()
 }
-
-
-
-
 #[no_mangle]
-pub extern "C" fn predict_SVM(model: *mut f64,dataset_inputs: *const f64, model_len:i32) -> f32 {
+pub extern "C" fn radial_base_kernel_trick(xn:*mut f32, xm:*mut f32,x_dim:i32) ->f64{
 
-
-    let (model_slice, dataset_inputs_slice) =
+    let (xn_slice, xm_slice) =
         unsafe {
-            (from_raw_parts_mut(model, model_len as usize),
-             from_raw_parts(dataset_inputs, model_len as usize))
+            (from_raw_parts(xn, x_dim as usize),
+             from_raw_parts(xm, x_dim as usize))
         };
 
-    let model_matrix = DMatrix::from_iterator( 1,model_len as usize, model_slice.iter().cloned());
-    let dataset_inputs_matrix = DMatrix::from_iterator( model_len as usize,1, dataset_inputs_slice.iter().cloned());
+    let res = (expf(-1.0 * (Array::from(xn_slice.to_vec()).dot(&Array::from(xn_slice.to_vec()))) as f32)
+        * expf(-1.0 * (Array::from(xm_slice.to_vec()).dot(&Array::from(xm_slice.to_vec())))  as f32)
+        * expf(2.0 * (Array::from(xn_slice.to_vec()).dot(&Array::from(xm_slice.to_vec()))) as f32));
 
-    let mut pred = &model_matrix*&dataset_inputs_matrix;
-    let mut res:f32;
-
-    if pred.row(0)[0]>=0.0{
-        res = 1.0 as f32;
-    }else{
-        res = -1.0 as f32;
-    }
-
-    res
+    res as f64
 
 }
 
+#[no_mangle]
+pub extern "C" fn predict_SVM_trick(point : *mut f32, model : &mut SVM, dataset_expected_output_len:i32, dataset_inputs_dim:i32) -> f32 {
+
+    let mut point_vec = Vec::new();
+
+    let (point_slice)=
+    unsafe {
+        from_raw_parts_mut(point,2)
+    };
+
+    for i in 0..2{
+        point_vec.push(point_slice[i])
+    }
+
+    let mut Xn = Vec::new();
+    let mut origin = 0;
+    let mut end = dataset_inputs_dim;
+
+    let mut sum= 0.0;
+    for j in 0..dataset_expected_output_len {
+        for i in origin..end{
+            Xn.push(model.X[i as usize] as f32)
+        }
+
+        sum += model.alphas[j as usize]*model.Y[j as usize]*radial_base_kernel_trick(Xn.as_mut_ptr(),point_vec.as_mut_ptr(),dataset_inputs_dim);
+        Xn.clear();
+        origin = end;
+        end += dataset_inputs_dim;
+    }
+
+    if (sum>0.0){
+        1.0
+    }else{
+        -1.0
+    }
+}
 
 #[no_mangle]
 pub extern "C" fn destroy_array(arr: *mut f32, arr_size: i32) {
@@ -712,6 +748,13 @@ pub extern "C" fn destroy_array_double(arr: *mut f64, arr_size: i32) {
 
 #[no_mangle]
 pub extern "C" fn destroy_model(model: *mut MLP){
+    unsafe{
+        let _ = Box::from_raw(model);
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn destroy_model_SVM(model: *mut SVM){
     unsafe{
         let _ = Box::from_raw(model);
     }
