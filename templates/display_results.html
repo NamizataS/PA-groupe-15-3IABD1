@@ -31,14 +31,7 @@
                 <nav id="mainav" class="fl_right">
                     <ul class="clear">
                         <li class="active"><a href="{{ url_for('home') }}"><i class="fas fa-home"></i></a></li>
-                        <li><a class="drop" href="#">In progress</a>
-                            <ul>
-                                <li><a href="#">Algo 1 - Not yet</a></li>
-                                <li><a href="#">Algo 3 - Not yet</a></li>
-                                <li><a href="#">Algo ... - Not yet</a></li>
-                                <li><a href="#">Algo N - Not yet</a></li>
-                            </ul>
-                        </li>
+                        <li><a href="http://127.0.0.1:5000/dashboard">Description de nos algorithmes</a></li>
                         <li><a href="{{ url_for('resultPage') }}">Testez notre algo</a></li>
                     </ul>
                 </nav>
@@ -51,7 +44,12 @@
                     <h6 class="heading underline font-x2">Testez vous même :)</h6>
                 </div>
                 <div class="center">
-                    <p>Le genre de cette affiche est: {{pred}}</p>
+                    <img src="{{ url_for('static', filename='{{img_src}}')}}" alt="">
+                    <p>Le genre de cette affiche est:
+                        {% for x in pred %}
+                        {{ x }},
+                        {% endfor %}
+                    </p>
                 </div>
 
                 <div class="clear"></div>

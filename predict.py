@@ -12,6 +12,7 @@ class Predict:
         image = arr_image.resize((size))
         im_arr = np.array(image).flatten()
         im = np.array(im_arr) / 255.0
+        self.categories = ['Action', 'Comedy', 'Horror']
         self.image = im.tolist()
 
     def declare_lib(self):
@@ -39,7 +40,10 @@ class Predict:
         prediction = [my_lib.predict_rbf_model_classification(model_action, sample_inputs_native),
                       my_lib.predict_rbf_model_classification(model_comedy, sample_inputs_native),
                       my_lib.predict_rbf_model_classification(model_horror, sample_inputs_native)]
-        return prediction
+        os.remove(self.image_path)
+
+        predict = [self.categories[i] for i in range(0,len(self.categories)) if prediction[i] == 1]
+        return predict
 
     def predict_mlp(self):
         my_lib = self.declare_lib()
@@ -52,4 +56,5 @@ class Predict:
         my_lib.predict_mlp_model_classification.restype = POINTER(c_float)
         prediction = my_lib.predict_mlp_model_classification(model, sample_inputs_type(*self.image), sample_inputs_len)
         prediction = np.ctypeslib.as_array(prediction, (3,))
-        return prediction
+        predict = [self.categories[i] for i in range(0,len(self.categories)) if prediction[i] == 1]
+        return predict
