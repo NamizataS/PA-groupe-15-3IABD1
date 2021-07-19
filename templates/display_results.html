@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>Guess What</title>
+
+        <!-- Bootstrap core CSS -->
+        <!-- link href="{{ url_for('static',filename='vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet"-->
+
+        <!-- Custom fonts for this template -->
+        <!-- link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet"-->
+        <!-- link href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i" rel="stylesheet"-->
+
+        <!-- Custom styles for this template -->
+        <link href="../static/styles/layout.css" rel="stylesheet" type="text/css" media="all">
+
+    </head>
+
+    <body>
+        <div class="wrapper row1">
+            <header id="header" class="hoc clear">
+                <div id="logo" class="fl_left">
+                    <h1><a href="{{ url_for('home') }}">Guess What</a></h1>
+                </div>
+                <nav id="mainav" class="fl_right">
+                    <ul class="clear">
+                        <li class="active"><a href="{{ url_for('home') }}"><i class="fas fa-home"></i></a></li>
+                        <li><a href="http://127.0.0.1:5000/dashboard">Description de nos algorithmes</a></li>
+                        <li><a href="{{ url_for('resultPage') }}">Testez notre algo</a></li>
+                    </ul>
+                </nav>
+            </header>
+        </div>
+
+        <div class="wrapper row3">
+            <main class="hoc container clear">
+                <div class="center btmspace-80">
+                    <h6 class="heading underline font-x2">Testez vous même :)</h6>
+                </div>
+                <div class="center">
+                    <img src="{{ url_for('static', filename='{{img_src}}')}}" alt="">
+                    {% if length == 0 %}
+                        <p>Le genre de cette affiche est: Autre</p>
+                    {% else %}
+                    <p>Le genre de cette affiche est:
+                        {% for x in pred %}
+                        {{ x }},
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                </div>
+                <div class="center">
+                    <a class="btn" href="{{ url_for('resultPage') }}">Réessayez pour une autre affiche</a>
+                </div>
+                <div class="clear"></div>
+            </main>
+        </div>
+
+        <p >Copyright &copy; Do we have a name ? 2021</p>
+        </div>
+        </footer>
+
+        <!-- Bootstrap core JavaScript -->
+        <script src="{{ url_for('static',filename='vendor/jquery/jquery.min.js')}}"></script>
+        <script src="{{ url_for('static',filename='vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+
+    </body>
+</html>

@@ -13,8 +13,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3001ee7c-2b66-450d-bb56-ea9dbde155de" name="Default Changelist" comment="">
+<<<<<<< HEAD
+=======
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+>>>>>>> feature/RBF
       <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Notebook_CAS_DE_TESTS_GROUPE_15-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/Notebook_CAS_DE_TESTS_GROUPE_15-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Notebook___CAS_DE_TESTS_RBF_SVM-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/Notebook___CAS_DE_TESTS_RBF_SVM-checkpoint.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/test_dataset-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/test_dataset-checkpoint.ipynb" afterDir="false" />
+<<<<<<< HEAD
+=======
+      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Notebook___CAS_DE_TESTS_RBF_SVM.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Notebook___CAS_DE_TESTS_RBF_SVM.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+>>>>>>> feature/RBF
       <change beforePath="$PROJECT_DIR$/dataset/test/action/Ant-Man.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dataset/test/action/Ant-Man_and_the_Wasp.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dataset/test/action/Ava.png" beforeDir="false" />
@@ -51,7 +63,20 @@
       <change beforePath="$PROJECT_DIR$/dataset/train/comedie/8_Women.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dataset/train/comedie/9_mois_ferme.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dataset/train/comedie/_Hot_Fuzz.png" beforeDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/test_dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_dataset.py" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/predict.py" beforeDir="false" afterPath="$PROJECT_DIR$/predict.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/display_results.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/display_results.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_dataset.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_dataset.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_keep/dataset_mlp.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_keep/model_action_rbf_multiclass_17_07_2021_17_39.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_keep/model_comedy_rbf_multiclass_17_07_2021_17_39.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_keep/model_horror_rbf_multiclass_17_07_2021_17_39.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_keep/model_mlp_dataset.json" beforeDir="false" />
+>>>>>>> feature/RBF
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,21 +121,6 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunManager" selected="Python.app">
-    <configuration name="Run PA-groupe-15-3IABD1" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="command" value="run --package PA-groupe-15-3IABD1 --bin PA-groupe-15-3IABD1" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <option name="channel" value="DEFAULT" />
-      <option name="requiredFeatures" value="true" />
-      <option name="allFeatures" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <envs />
-      <option name="isRedirectInput" value="false" />
-      <option name="redirectInputPath" value="" />
-      <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Test" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="test --package PA-groupe-15-3IABD1 --lib tests" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -141,6 +151,11 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="PA-groupe-15-3IABD1" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -163,7 +178,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="test_bug" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="PA-groupe-15-3IABD1" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -176,7 +191,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_bug.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -185,7 +200,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="test_dataset" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="test_rbf (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="PA-groupe-15-3IABD1" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -198,7 +213,29 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_dataset.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_rbf.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="test_rbf" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="PA-groupe-15-3IABD1" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test_dataset" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_dataset/test_rbf.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -210,8 +247,7 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.app" />
-        <item itemvalue="Python.test_dataset" />
-        <item itemvalue="Python.test" />
+        <item itemvalue="Python.test_bug" />
       </list>
     </recent_temporary>
   </component>
@@ -249,7 +285,18 @@
       <workItem from="1624017632304" duration="586000" />
       <workItem from="1624107597368" duration="442000" />
       <workItem from="1624116307942" duration="25000" />
+<<<<<<< HEAD
       <workItem from="1626604601615" duration="284000" />
+=======
+      <workItem from="1626604601615" duration="527000" />
+      <workItem from="1626605304529" duration="2930000" />
+      <workItem from="1626616063450" duration="8585000" />
+      <workItem from="1626645402984" duration="1165000" />
+      <workItem from="1626646830172" duration="55000" />
+      <workItem from="1626683825246" duration="319000" />
+      <workItem from="1626704568125" duration="180000" />
+      <workItem from="1626704781097" duration="2699000" />
+>>>>>>> feature/RBF
     </task>
     <servers />
   </component>

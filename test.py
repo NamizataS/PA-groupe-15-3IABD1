@@ -2,76 +2,64 @@ from ctypes import *
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+from mpl_toolkits.mplot3d import Axes3D
 
-path_to_shared_library = "target/debug/librust_lib.dylib"
+path_to_shared_library = "target/release/librust_lib.dylib"
 def toList(arr):
     return [j for i in arr for j in i]
 
 if __name__ == "__main__":
     my_lib = cdll.LoadLibrary(path_to_shared_library)
-    # Dataset
-    X = np.array([
-        [1, 1],
-        [2, 3],
-        [3, 3]
-    ])
-    Y = np.array([
-        1,
-        -1,
-        -1
-    ])
-
-    d = [2, 1]
+    X = np.concatenate(
+        [np.random.random((50, 2)) * 0.9 + np.array([1, 1]), np.random.random((50, 2)) * 0.9 + np.array([2, 2])])
+    Y = np.concatenate([np.ones((50, 1)), np.ones((50, 1)) * -1.0])
 
     # Convert array to list
     dataset_inputs = toList(X)
-    dataset_expected_outputs = Y.tolist()
+    dataset_expected_outputs = Y
     inputs_len = len(dataset_inputs)
-    expected_len = len(dataset_expected_outputs)
+    outputs_len = len(dataset_expected_outputs)
+    output_dim = 1
 
-    # Declaration of argtypes and restypes for the function create_mlp_model
-    arr_size = len(d)
-    arr_type = c_int * arr_size
-    native_arr = arr_type(*d)
-    my_lib.create_mlp_model.argtypes = [arr_type, c_int]
-    my_lib.create_mlp_model.restype = c_void_p
+    dataset_inputs_type = c_float * inputs_len
+    dataset_inputs_native = dataset_inputs_type(*dataset_inputs)
+    dataset_outputs_type = c_float * outputs_len
+    dataset_outputs_native = dataset_outputs_type(*dataset_expected_outputs)
+    sample_inputs_type = c_float * 2
+    iterations = 40000
 
-    model = my_lib.create_mlp_model(native_arr, 2)
+    # create model
+    my_lib.create_rbf_model.argtypes = [c_int, dataset_inputs_type, c_int, c_int]
+    my_lib.create_rbf_model.restype = c_void_p
+
+    model = my_lib.create_rbf_model(10, dataset_inputs_native, inputs_len, len(X[0]))
+
+    # test dataset
     test_dataset = [[x1 / 10, x2 / 10] for x1 in range(-10, 40, 2) for x2 in range(-10, 40, 2)]
     colors = ["blue" if output >= 0 else "red" for output in dataset_expected_outputs]
 
-    # Declaration of argtypes and restypes for the function predict_mlp_model_classification
-    p_type = c_float * 2
-    my_lib.predict_mlp_model_classification.argtypes = [c_void_p, p_type, c_int]
-    my_lib.predict_mlp_model_classification.restype = POINTER(c_float)
-    p_len = 2
+    # training
+    my_lib.lloyd.argtypes = [c_void_p, dataset_inputs_type, c_int, c_int]
+    my_lib.lloyd.restype = None
+    my_lib.lloyd(model, dataset_inputs_native, inputs_len, iterations)
 
-    predicted_outputs = [my_lib.predict_mlp_model_classification(model, p_type(*p), p_len)[0] for p in test_dataset]
-    predicted_outputs_colors = ['blue' if label >= 0 else 'red' for label in predicted_outputs]
-    plt.scatter([p[0] for p in test_dataset], [p[1] for p in test_dataset], c=predicted_outputs_colors)
-    plt.scatter([p[0] for p in X], [p[1] for p in X], c=colors, s=200)
+    my_lib.train_rbf_model_classification.argtypes = [c_void_p, dataset_inputs_type, dataset_outputs_type, c_int, c_int,
+                                                      c_int, c_float]
+    my_lib.train_rbf_model_classification.restype = POINTER(c_float)
+    loss = my_lib.train_rbf_model_classification(model, dataset_inputs_native, dataset_outputs_native, inputs_len, outputs_len,
+                                          iterations, 0.0001)
+    loss_arr = np.ctypeslib.as_array(loss, (iterations,))
+
+    #graph for the loss
+    indexes = np.arange(iterations)
+    plt.plot(indexes, loss_arr, c='red')
+    # permet d'afficher la zone directement de façon plus lisible
+    # affiche la moyenne
+    plt.legend(['mean', 'std'], loc='upper left')  # légende du graphe
+    plt.title('loss on linear multiple problem')  # titre du graphe
+    plt.xlabel('epochs')  # label de l'axe x
     plt.show()
-
-    flattened_len = len(dataset_inputs)
-    # Declaration of argtypes and restypes for the function predict_mlp_model_classification
-    inputs_type = c_float * flattened_len
-    outputs_type = c_float * expected_len
-    my_lib.train_classification_stochastic_backdrop_mlp_model.argtypes = [c_void_p, inputs_type, outputs_type, c_float,
-                                                                          c_int, c_int, c_int]
-    my_lib.train_classification_stochastic_backdrop_mlp_model.restype = None
-    inputs_native = inputs_type(*dataset_inputs)
-    outputs_native = outputs_type(*dataset_expected_outputs)
-
-    my_lib.train_classification_stochastic_backdrop_mlp_model(model, inputs_native, outputs_native, 0.001, 100000,
-                                                              flattened_len, expected_len)
-
-    predicted_outputs = [my_lib.predict_mlp_model_classification(model, p_type(*p), p_len)[0] for p in test_dataset]
-    predicted_outputs_colors = ['blue' if label >= 0 else 'red' for label in predicted_outputs]
-    plt.scatter([p[0] for p in test_dataset], [p[1] for p in test_dataset], c=predicted_outputs_colors)
-    plt.scatter([p[0] for p in X], [p[1] for p in X], c=colors, s=200)
-    plt.show()
-
-    # Free memory
-    my_lib.destroy_model.argtypes = [c_void_p]
-    my_lib.destroy_model.restype = None
-    my_lib.destroy_model(model)
+    # destroy model
+    my_lib.destroy_rbf_model.argtypes = [c_void_p]
+    my_lib.destroy_rbf_model.restype = None
+    my_lib.destroy_rbf_model(model)
