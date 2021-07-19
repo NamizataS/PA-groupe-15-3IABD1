@@ -17,7 +17,8 @@
       <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Notebook_CAS_DE_TESTS_GROUPE_15-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/Notebook_CAS_DE_TESTS_GROUPE_15-checkpoint.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Notebook___CAS_DE_TESTS_RBF_SVM-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/Notebook___CAS_DE_TESTS_RBF_SVM-checkpoint.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/test_dataset-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/test_dataset-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Notebook_CAS_DE_TESTS_GROUPE_15.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Notebook_CAS_DE_TESTS_GROUPE_15.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Notebook___CAS_DE_TESTS_RBF_SVM.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Notebook___CAS_DE_TESTS_RBF_SVM.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dataset/test/action/Ant-Man.png" beforeDir="false" />
@@ -59,11 +60,13 @@
       <change beforePath="$PROJECT_DIR$/predict.py" beforeDir="false" afterPath="$PROJECT_DIR$/predict.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/display_results.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/display_results.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/result.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/result.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_dataset.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/test_dataset.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_dataset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_dataset.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_dataset.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_keep/dataset_mlp.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_keep/model_action_rbf_multiclass_17_07_2021_17_39.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_keep/model_comedy_rbf_multiclass_17_07_2021_17_39.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_keep/model_horror_rbf_multiclass_17_07_2021_17_39.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_keep/model_mlp_dataset.json" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,18 +80,12 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Rust File" />
-        <option value="HTML File" />
         <option value="Python Script" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="InvalidFacetManager">
-    <ignored-facets>
-      <facet id="PA-groupe-15-3IABD1/invalid/Python facet" />
-    </ignored-facets>
   </component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="fvhgdmrg" />
@@ -100,7 +97,6 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="cf.first.check.clang-format" value="false" />
@@ -143,6 +139,11 @@
       <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
@@ -189,29 +190,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="test_dataset" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="PA-groupe-15-3IABD1" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_dataset.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="test_rbf" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="test_rbf (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="PA-groupe-15-3IABD1" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -233,11 +212,32 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="test_rbf" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="PA-groupe-15-3IABD1" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test_dataset" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_dataset/test_rbf.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Python.app" />
         <item itemvalue="Python.test_bug" />
-        <item itemvalue="Python.test_rbf" />
       </list>
     </recent_temporary>
   </component>
@@ -275,62 +275,18 @@
       <workItem from="1624017632304" duration="586000" />
       <workItem from="1624107597368" duration="442000" />
       <workItem from="1624116307942" duration="25000" />
-      <workItem from="1624118457023" duration="1744000" />
-      <workItem from="1624298014590" duration="3215000" />
-      <workItem from="1624374836797" duration="3961000" />
-      <workItem from="1624524142449" duration="5557000" />
-      <workItem from="1624542368077" duration="38000" />
-      <workItem from="1624548749711" duration="623000" />
-      <workItem from="1624552694054" duration="1366000" />
-      <workItem from="1624555961820" duration="569000" />
-      <workItem from="1624725811499" duration="516000" />
-      <workItem from="1624728647949" duration="87000" />
-      <workItem from="1624731611836" duration="1015000" />
-      <workItem from="1624747427137" duration="189000" />
-      <workItem from="1624796856148" duration="1187000" />
-      <workItem from="1624815333628" duration="1788000" />
-      <workItem from="1624828838878" duration="840000" />
-      <workItem from="1624959628216" duration="962000" />
-      <workItem from="1625002422944" duration="160000" />
-      <workItem from="1625003062502" duration="100000" />
-      <workItem from="1625003434388" duration="332000" />
-      <workItem from="1625045401136" duration="1312000" />
-      <workItem from="1625055535749" duration="3841000" />
-      <workItem from="1625088300482" duration="596000" />
-      <workItem from="1625241312588" duration="631000" />
-      <workItem from="1625403583700" duration="2144000" />
-      <workItem from="1625412231342" duration="2254000" />
-      <workItem from="1625514706889" duration="2722000" />
-      <workItem from="1625572837598" duration="685000" />
-      <workItem from="1625586321418" duration="1702000" />
-      <workItem from="1625678692039" duration="577000" />
-      <workItem from="1625733217842" duration="2603000" />
-      <workItem from="1625834413218" duration="160000" />
-      <workItem from="1625834679666" duration="2724000" />
-      <workItem from="1625948043436" duration="735000" />
-      <workItem from="1625995608701" duration="194000" />
-      <workItem from="1626001007921" duration="1272000" />
-      <workItem from="1626023791356" duration="2192000" />
-      <workItem from="1626110508665" duration="3018000" />
-      <workItem from="1626168513267" duration="2244000" />
-      <workItem from="1626271693773" duration="1747000" />
-      <workItem from="1626279827525" duration="1097000" />
-      <workItem from="1626344573283" duration="2509000" />
-      <workItem from="1626353803299" duration="326000" />
-      <workItem from="1626354774825" duration="19537000" />
-      <workItem from="1626469485460" duration="3850000" />
-      <workItem from="1626523634506" duration="9367000" />
-      <workItem from="1626546503539" duration="17000" />
-      <workItem from="1626546970614" duration="7555000" />
-      <workItem from="1626599286328" duration="4856000" />
+      <workItem from="1626604601615" duration="527000" />
+      <workItem from="1626605304529" duration="2930000" />
+      <workItem from="1626616063450" duration="8585000" />
+      <workItem from="1626645402984" duration="1165000" />
+      <workItem from="1626646830172" duration="55000" />
+      <workItem from="1626683825246" duration="319000" />
+      <workItem from="1626704568125" duration="180000" />
+      <workItem from="1626704781097" duration="2699000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/PA_groupe_15_3IABD1$app.coverage" NAME="app Coverage Results" MODIFIED="1626604003534" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/PA_groupe_15_3IABD1$test_bug.coverage" NAME="test_bug Coverage Results" MODIFIED="1626601740667" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

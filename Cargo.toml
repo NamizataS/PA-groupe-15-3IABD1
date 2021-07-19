@@ -15,3 +15,6 @@ libm = "0.2.1"
 nalgebra="0.26.2"
 serde = {version = "1.0.126", features = ["derive"]}
 serde_json = "1.0.64"
+osqp = "0.6.2"
+itertools = "0.10.0"
+ndarray = {version = "0.13"}

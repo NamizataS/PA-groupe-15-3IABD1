@@ -45,13 +45,19 @@
                 </div>
                 <div class="center">
                     <img src="{{ url_for('static', filename='{{img_src}}')}}" alt="">
+                    {% if length == 0 %}
+                        <p>Le genre de cette affiche est: Autre</p>
+                    {% else %}
                     <p>Le genre de cette affiche est:
                         {% for x in pred %}
                         {{ x }},
                         {% endfor %}
                     </p>
+                    {% endif %}
                 </div>
-
+                <div class="center">
+                    <a class="btn" href="{{ url_for('resultPage') }}">Réessayez pour une autre affiche</a>
+                </div>
                 <div class="clear"></div>
             </main>
         </div>

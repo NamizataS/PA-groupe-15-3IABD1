@@ -22,9 +22,9 @@ def resultPage():
 def upload_file():
     if request.method == 'POST':
         image = request.files['file']
-        image_name = os.path.join(app.config['UPLOAD_FOLDER'], image.filename)
+        #image_name = os.path.join(app.config['UPLOAD_FOLDER'], image.filename)
         image.save(secure_filename(image.filename))
-        image.save(image_name)
+        #image.save(image_name)
         image = secure_filename(image.filename)
         return redirect(url_for("display_results", image=image))
     else:
@@ -34,8 +34,8 @@ def upload_file():
 @app.route('/display_results<image>')
 def display_results(image):
     predict_obj = predict.Predict(image, (32, 32))
-    prediction = predict_obj.predict_rbf()
-    return render_template("display_results.html", pred=prediction, src_image=image)
+    prediction = predict_obj.predict_mlp()
+    return render_template("display_results.html", pred=prediction, src_image=image, length=len(prediction))
 
 
 if __name__ == "__main__":
