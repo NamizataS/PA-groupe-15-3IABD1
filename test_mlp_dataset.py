@@ -132,7 +132,7 @@ if __name__ == "__main__":
     my_lib.create_mlp_model.argtypes = [arr_type, c_int]
     my_lib.create_mlp_model.restype = c_void_p
     model = my_lib.create_mlp_model(native_arr, arr_size)
-
+    print(model)
     # train model
     x_len = len(x_train)
     y_len = len(y_train)

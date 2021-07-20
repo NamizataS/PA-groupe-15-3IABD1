@@ -25,8 +25,7 @@ pub struct MLP{
     d: Vec<i32>,
     W: Vec<Vec<Vec<f32>>>,
     x: Vec<Vec<f32>>,
-    deltas: Vec<Vec<f32>>,
-    loss: Vec<f32>
+    deltas: Vec<Vec<f32>>
 }
 
 #[derive(Serialize, Deserialize)]
@@ -36,8 +35,7 @@ pub struct RBF{
     gamma: f32,//Vec<f32>,
     K: i32,
     sample_count: usize,
-    input_dim: usize,
-    loss: Vec<f32>
+    input_dim: usize
 }
 
 #[derive(Serialize, Deserialize)]
@@ -229,14 +227,11 @@ pub extern "C" fn create_mlp_model(npl: *mut i32, npl_len: i32) -> *mut MLP{
         }
         deltas.push(new_vec_deltas);
     }
-    let mut loss = Vec::new();
-    //let mut loss = Vec::new();
     let model = MLP {
         d,
         W,
         x: X,
-        deltas,
-        loss
+        deltas
     };
     let model_leaked = Box::leak(Box::from(model));
     model_leaked as *mut MLP
@@ -311,40 +306,10 @@ pub extern "C" fn train_stochastic_gradient_backpropagation(model: &mut MLP, fla
                 }
             }
         }
-        let iteration_loss = get_mse_mlp(model, flattened_dataset_inputs, flattened_expected_outputs, sample_count as usize, input_dim, output_dim);
-        model.loss.push(iteration_loss);
     }
 }
 
-#[no_mangle]
-pub extern "C" fn get_mse_mlp(model: &mut MLP, dataset_inputs: &mut [f32], dataset_outputs: &[f32], sample_count: usize, inputs_dim: usize, outputs_dim: usize) ->f32{
-    let mut sum_rslt = 0.0f32;
-    for i in 0..sample_count{
-        let mut sample_inputs = &mut dataset_inputs[i*inputs_dim..(i+1)*inputs_dim];
-        let mut sample_outputs = &dataset_outputs[i*outputs_dim..(i+1)*outputs_dim];
-        let mut pred = predict_mlp_model_classification(model, sample_inputs.as_mut_ptr(), inputs_dim as i32);
-        let mut pred = unsafe{
-            from_raw_parts(pred, outputs_dim)
-        };
-        let mut outputs_rslt = 0.0f32;
-        for j in 0..outputs_dim{
-            outputs_rslt += powf(pred[j] - sample_outputs[j], 2.0);
-        }
-        sum_rslt += outputs_rslt / (outputs_dim as f32);
-    }
-    sum_rslt / (sample_count as f32)
-}
 
-#[no_mangle]
-pub extern "C" fn get_mlp_loss(model: *mut MLP)->*mut f32{
-    let mut model = unsafe{
-        model.as_mut().unwrap()
-    };
-    let mut loss = model.loss.clone();
-    let boxed_slice = loss.into_boxed_slice();
-    let loss_ref = Box::leak(boxed_slice);
-    loss_ref.as_mut_ptr()
-}
 
 #[no_mangle]
 pub extern "C" fn predict_mlp_model_classification(model: *mut MLP, sample_inputs: *mut f32, inputs_len:i32) -> *mut f32 {
@@ -355,13 +320,13 @@ pub extern "C" fn predict_mlp_model_classification(model: *mut MLP, sample_input
     let L = (model.d.len() - 1) as usize;
     let i = (model.d[L] + 1) as usize;
     let mut result:&mut[f32] = &mut model.x[L][1..i];
-    for i in 0..result.len(){
+    /*for i in 0..result.len(){
         if result[i] >= 0.0{
             result[i] = 1.0;
         } else{
             result[i] = -1.0;
         }
-    }
+    }*/
     result.as_mut_ptr()
 }
 
@@ -429,7 +394,6 @@ pub extern "C" fn create_rbf_model(K: i32, dataset_inputs: *mut f32, dataset_inp
         let mut num = rng.gen_range(-1.0..1.0);
         gamma.push(num);
     }*/
-    let mut loss = Vec::new();
 
     let model = RBF{
         W,
@@ -437,8 +401,7 @@ pub extern "C" fn create_rbf_model(K: i32, dataset_inputs: *mut f32, dataset_inp
         gamma,
         K,
         sample_count,
-        input_dim,
-        loss
+        input_dim
     };
     let model_leaked = Box::leak(Box::from(model));
     model_leaked as *mut RBF
@@ -495,7 +458,7 @@ pub extern "C" fn evaluate_clusters(model: &mut RBF, flattened_dataset_inputs: &
     clusters
 }
 #[no_mangle]
-pub extern "C" fn lloyd(model: *mut RBF, flattened_dataset_inputs: *const f32, inputs_len: i32, iterations: i32){
+pub extern "C" fn lloyd(model: *mut RBF, flattened_dataset_inputs: *const f32, inputs_len: i32){
     let mut model = unsafe{
         model.as_mut().unwrap()
     };
@@ -584,16 +547,6 @@ pub extern "C" fn predict_rbf_model_classification(model: *mut RBF, sample_input
 }
 
 #[no_mangle]
-pub extern "C" fn get_mse_rbf(model: &mut RBF, dataset_inputs: &[f32], dataset_outputs: &[f32]) ->f32{
-    let mut sum_rslt = 0.0f32;
-    for i in 0..model.sample_count{
-        let mut sample_inputs = &dataset_inputs[i*model.input_dim..(i+1)*model.input_dim];
-        let mut pred = predict_rbf_model_classification(model, sample_inputs.as_ptr());
-        sum_rslt += powf(pred - dataset_outputs[i], 2.0);
-    }
-    sum_rslt / (model.sample_count as f32)
-}
-#[no_mangle]
 pub extern "C" fn train_rbf_model_classification(model: *mut RBF, flattened_dataset_inputs: *mut f32, dataset_outputs: *mut f32, dataset_inputs_len: i32, dataset_outputs_len: i32, iterations: i32, learning_rate: f32){
     let mut model = unsafe{
         model.as_mut().unwrap()
@@ -628,24 +581,10 @@ pub extern "C" fn train_rbf_model_classification(model: *mut RBF, flattened_data
         for i in 0..model.W.len(){
             model.W[i] += learning_rate * (yk - gXk) * Xk[i];
         }
-        let mut iteration_loss = get_mse_rbf(model, flattened_dataset_inputs, dataset_outputs);
-        model.loss.push(iteration_loss);
     }
     model.gamma -= learning_rate * gradient(model, flattened_dataset_inputs.as_mut_ptr(), dataset_inputs_len, dataset_outputs.as_mut_ptr(), dataset_outputs_len, true);
-    println!("Training done");
 }
 
-#[no_mangle]
-pub extern "C" fn get_loss_rbf(model: *mut RBF)-> *mut f32{
-    let mut model = unsafe{
-        model.as_mut().unwrap()
-    };
-    println!("The len of the loss is {}", model.loss.len());
-    let mut loss = model.loss.clone();
-    let boxed_slice = loss.into_boxed_slice();
-    let loss_ref = Box::leak(boxed_slice);
-    loss_ref.as_mut_ptr()
-}
 #[no_mangle]
 pub extern "C" fn train_em_rbf_model_regression(model: *mut RBF, flattened_dataset_inputs: *mut f32, dataset_outputs: *mut f32, dataset_inputs_len: i32, dataset_outputs_len: i32, output_dim: i32, learning_rate: f32){
     let mut model = unsafe{

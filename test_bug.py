@@ -10,72 +10,94 @@ import matplotlib.pyplot as plt
 path_to_shared_library = "target/release/librust_lib.dylib"
 def toList(arr):
     return [j for i in arr for j in i]
+DATASET_FOLDER = "nouveau_dataset"
+ACTION_SUBFOLDER = os.path.join(DATASET_FOLDER, "A")
+COMEDY_SUBFOLDER = os.path.join(DATASET_FOLDER, "C")
+HORROR_SUBFOLDER = os.path.join(DATASET_FOLDER, "H")
+
+path_to_shared_library = "target/release/librust_lib.dylib"
+
+
+def NameImg(t):
+    title = t
+    for i in '<>:“/\\|?*.':
+        if i in title:
+            title = title.replace(i, '')
+
+    title = title.replace(' ', '_')
+    return title
+
+
+def sort_movies(n, length):
+    res = []
+    if (n <= 0):
+        return res
+    if (n > length):
+        n = length
+
+    while (True):
+        s = random.randrange(n)
+        if s not in res:
+            res.append(s)
+        if len(res) == n:
+            return res
+
+
+def get_train_dataset(dataset, n):
+    train_dataset = []
+    index = sort_movies(n, len(dataset))
+    for i in index:
+        train_dataset.append(dataset[i])
+    return train_dataset, index
+
+
+def get_test_dataset(index, dataset):
+    test_dataset = []
+    for i in range(0, len(dataset)):
+        if i not in index:
+            test_dataset.append(dataset[i])
+    return test_dataset
+
+
+def fill_x_and_y(folder_output, folder_input, dataset):
+    with open(folder_output) as f:
+        for line in f:
+            if line[0] != '[' and line[0] != ']':
+                lineJson = json.loads(line[:-2])
+                title = NameImg(lineJson["title"])
+                file_path = os.path.join(folder_input, f"{title}.png")
+                if os.path.isfile(file_path):
+                    image = Image.open(file_path)
+                    image = image.resize((32, 32))
+                    im_arr = np.array(image).flatten()
+                    new_row = {'image': file_path, 'genre': lineJson['genre']}
+                    dataset.append(new_row)
+
+
+def import_dataset(file_path, folder):
+    dataset = []
+    fill_x_and_y(file_path, folder, dataset)
+    return dataset
+
 
 if __name__ == '__main__':
-    my_lib = cdll.LoadLibrary(path_to_shared_library)
-    X = np.concatenate(
-        [np.random.random((50, 2)) * 0.9 + np.array([1, 1]), np.random.random((50, 2)) * 0.9 + np.array([2, 2])])
-    Y = np.concatenate([np.ones((50, 1)), np.ones((50, 1)) * -1.0])
+    dataset_action = import_dataset('nouveau_dataset/Action.txt', ACTION_SUBFOLDER)
+    dataset_comedy = import_dataset('nouveau_dataset/Comedy.txt', COMEDY_SUBFOLDER)
+    dataset_horror = import_dataset('nouveau_dataset/Horreur.txt', HORROR_SUBFOLDER)
 
-    # Convert array to list
-    dataset_inputs = toList(X)
-    dataset_expected_outputs = toList(Y)
-    inputs_len = len(dataset_inputs)
-    expected_len = len(dataset_expected_outputs)
-    inputs_dim = inputs_len // expected_len
+    train_dataset_action, index_action = get_train_dataset(dataset_action, 293)
+    test_dataset_action = get_test_dataset(index_action, dataset_action)
 
-    # Declaration of argtypes and restypes for the function create_model_SVM
-    inputs_type = c_float * inputs_len
-    outputs_type = c_float * expected_len
-    my_lib.train_model_SVM.argtypes = [inputs_type, outputs_type, c_int, c_int, c_int]
-    my_lib.train_model_SVM.restype = POINTER(c_double)
+    train_dataset_comedy, index_comedy = get_train_dataset(dataset_comedy, 380)
+    test_dataset_comedy = get_test_dataset(index_comedy, dataset_comedy)
 
-    inputs_native = inputs_type(*dataset_inputs)
-    outputs_native = outputs_type(*dataset_expected_outputs)
+    train_dataset_horror, index_horror = get_train_dataset(dataset_horror, 439)
+    test_dataset_horror = get_test_dataset(index_horror, dataset_horror)
 
-    # Creation of model
-    native_arr = my_lib.train_model_SVM(inputs_native, outputs_native, inputs_len, expected_len, inputs_dim)
-    model_len = inputs_dim + 1
+    train_dataset = train_dataset_action + train_dataset_comedy + train_dataset_horror
+    test_dataset = test_dataset_action + test_dataset_comedy + test_dataset_horror
 
-    # Declaration of argtypes and restypes for the function predict_SVM
-    native_type = type(native_arr)
-    coordonate_type = c_double * model_len
-    my_lib.predict_SVM.argtypes = [native_type, coordonate_type, c_int]
-    my_lib.predict_SVM.restype = c_float
-
-    # Trainning
-    r = np.arange(0.0, 4.0, 0.25)
-
-    points_x1_blue = []
-    points_x2_blue = []
-
-    points_x1_red = []
-    points_x2_red = []
-
-    for i in r:
-        for j in r:
-            coord = coordonate_type(*[1.0, i, j])
-            res = my_lib.predict_SVM(native_arr, coord, model_len)
-
-            if res > 0.0:
-                points_x1_blue.append(i)
-                points_x2_blue.append(j)
-            else:
-                points_x1_red.append(i)
-                points_x2_red.append(j)
-
-    plt.scatter(points_x1_blue, points_x2_blue, c='blue')
-    plt.scatter(points_x1_red, points_x2_red, c='red')
-
-    plt.scatter([X[p][0] for p in range(len(Y)) if Y[p] > 0], [X[p][1] for p in range(len(Y)) if Y[p] > 0], c='blue',
-                s=100)
-    plt.scatter([X[p][0] for p in range(len(Y)) if Y[p] < 0], [X[p][1] for p in range(len(Y)) if Y[p] < 0], c='red',
-                s=100)
-
-    plt.show()
-    plt.clf()
-
-    # Free memory
-    my_lib.destroy_array_double.argtypes = [POINTER(c_double), c_int]
-    my_lib.destroy_array_double.restype = None
-    my_lib.destroy_array_double(native_arr, model_len)
+    with open("nouveau_dataset/train_dataset2.json", "w") as train_dataset_file:
+        json.dump(train_dataset, train_dataset_file)
+    with open('nouveau_dataset/test_dataset2.json', "w") as test_dataset_file:
+        json.dump(test_dataset, test_dataset_file)
