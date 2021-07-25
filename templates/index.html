@@ -31,8 +31,12 @@
                 <nav id="mainav" class="fl_right">
                     <ul class="clear">
                         <li class="active"><a href="{{ url_for('home') }}"><i class="fas fa-home"></i></a></li>
-                        <li><a href="http://127.0.0.1:5000/dashboard">Description de nos algorithmes</a></li>
-                        <li><a href="{{ url_for('resultPage') }}">Testez notre algo</a></li>
+                        <li><a class="drop" href="#">Testez nos algorithmes</a>
+                            <ul>
+                                <li><a href="{{ url_for('upload_file_mlp')}}">Perceptron multicouche (MLP)</a></li>
+                                <li><a href="{{ url_for('upload_file_rbf')}}">Radial Basis Function (RBF)</a> </li>
+                            </ul>
+                        </li>
                     </ul>
                 </nav>
             </header>

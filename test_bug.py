@@ -3,9 +3,12 @@ import random
 import numpy as np
 from PIL import Image
 import json
-import dashboard
-from ctypes import *
-import matplotlib.pyplot as plt
+
+from matplotlib import pyplot as plt
+
+from sklearn_wrapper import MySKLearnMLPRawWrapper
+import tqdm
+from sklearn.metrics import mean_squared_error, accuracy_score, confusion_matrix
 
 path_to_shared_library = "target/release/librust_lib.dylib"
 def toList(arr):
@@ -81,6 +84,33 @@ def import_dataset(file_path, folder):
 
 
 if __name__ == '__main__':
+    X = np.array([[1, 0], [0, 1], [0, 0], [1, 1]])
+    Y = np.array([1, 1, -1, -1])
+    d = [2, 2, 1]
+
+    dataset_inputs = X
+    dataset_expected_outputs = Y
+
+    test_dataset = [[x1 / 10, x2 / 10] for x1 in range(-5, 15, 2) for x2 in range(-5, 15, 2)]
+    colors = ["blue" if output >= 0 else "red" for output in dataset_expected_outputs]
+    wrapped_model = MySKLearnMLPRawWrapper(d, iteration_count=100)
+    losses = []
+
+    for epoch in tqdm.tqdm(range(1000)):
+        wrapped_model.fit(dataset_inputs, dataset_expected_outputs)
+        predicted_y_train = wrapped_model.predict(dataset_inputs, 2, 2)
+        predicted_y_test = wrapped_model.predict(test_dataset, 2, 2)
+
+        loss = mean_squared_error(dataset_expected_outputs, predicted_y_train)
+        losses.append(loss)
+
+        plt.plot(losses)
+        plt.legend('loss', loc='upper left')
+        plt.title('Evolution of loss for MLP with Rust library')
+        plt.xlabel('epochs')
+        plt.ylabel('mean squared error')
+        plt.show()
+
     dataset_action = import_dataset('nouveau_dataset/Action.txt', ACTION_SUBFOLDER)
     dataset_comedy = import_dataset('nouveau_dataset/Comedy.txt', COMEDY_SUBFOLDER)
     dataset_horror = import_dataset('nouveau_dataset/Horreur.txt', HORROR_SUBFOLDER)

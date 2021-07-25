@@ -581,8 +581,8 @@ pub extern "C" fn train_rbf_model_classification(model: *mut RBF, flattened_data
         for i in 0..model.W.len(){
             model.W[i] += learning_rate * (yk - gXk) * Xk[i];
         }
+        //model.gamma -= learning_rate * gradient(model, flattened_dataset_inputs.as_mut_ptr(), dataset_inputs_len, dataset_outputs.as_mut_ptr(), dataset_outputs_len, true);
     }
-    model.gamma -= learning_rate * gradient(model, flattened_dataset_inputs.as_mut_ptr(), dataset_inputs_len, dataset_outputs.as_mut_ptr(), dataset_outputs_len, true);
 }
 
 #[no_mangle]
@@ -591,7 +591,7 @@ pub extern "C" fn train_em_rbf_model_regression(model: *mut RBF, flattened_datas
         model.as_mut().unwrap()
     };
     train_rbf_model_regression(model, flattened_dataset_inputs, dataset_outputs, dataset_inputs_len, dataset_outputs_len, output_dim);
-    model.gamma -= learning_rate * gradient(model, flattened_dataset_inputs, dataset_inputs_len, dataset_outputs, dataset_outputs_len, false);
+    //model.gamma -= learning_rate * gradient(model, flattened_dataset_inputs, dataset_inputs_len, dataset_outputs, dataset_outputs_len, false);
 }
 
 #[no_mangle]

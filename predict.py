@@ -29,12 +29,9 @@ class Predict:
         my_lib = self.declare_lib()
         my_lib.load_rbf_model.argtypes = [c_char_p]
         my_lib.load_rbf_model.restype = c_void_p
-        model_action = my_lib.load_rbf_model('test_dataset/test_keep/model_action_rbf_multiclass_17_07_2021_17_39.json'.encode("utf-8"))
-        model_comedy = my_lib.load_rbf_model('test_dataset/test_keep/model_comedy_rbf_multiclass_17_07_2021_17_39.json'.encode("utf-8"))
-        model_horror = my_lib.load_rbf_model('test_dataset/test_keep/model_horror_rbf_multiclass_17_07_2021_17_39.json'.encode("utf-8"))
-        #model_action = my_lib.load_rbf_model('test_dataset/RBF/model_action_rbf_multiclass_18_07_2021_18_46.json'.encode("utf-8"))
-        #model_comedy = my_lib.load_rbf_model('test_dataset/RBF/model_comedy_rbf_multiclass_18_07_2021_18_46.json'.encode("utf-8"))
-        #model_horror = my_lib.load_rbf_model('test_dataset/RBF/model_horror_rbf_multiclass_18_07_2021_18_46.json'.encode("utf-8"))
+        model_action = my_lib.load_rbf_model('test_dataset/RBF/model_rbf_action_dataset_24_07_2021_00_07.json'.encode("utf-8"))
+        model_comedy = my_lib.load_rbf_model('test_dataset/RBF/model_rbf_comedy_dataset_24_07_2021_00_07.json'.encode("utf-8"))
+        model_horror = my_lib.load_rbf_model('test_dataset/RBF/model_rbf_horror_dataset_24_07_2021_00_07.json'.encode("utf-8"))
         sample_inputs_len = len(self.image)
         sample_inputs_type = c_float * sample_inputs_len
         sample_inputs_native = sample_inputs_type(*self.image)
@@ -52,7 +49,7 @@ class Predict:
         my_lib = self.declare_lib()
         my_lib.load_mlp_model.argtypes = [c_char_p]
         my_lib.load_mlp_model.restype = c_void_p
-        model = my_lib.load_mlp_model('test_dataset/test_keep/model_mlp_dataset.json'.encode("utf-8"))
+        model = my_lib.load_mlp_model('test_dataset/MLP/model_mlp_dataset_two_class_25_07_2021_13_00.json'.encode("utf-8"))
         sample_inputs_len = len(self.image)
         sample_inputs_type = c_float * sample_inputs_len
         my_lib.predict_mlp_model_classification.argtypes = [c_void_p, sample_inputs_type, c_int]
@@ -60,5 +57,5 @@ class Predict:
         prediction = my_lib.predict_mlp_model_classification(model, sample_inputs_type(*self.image), sample_inputs_len)
         prediction = np.ctypeslib.as_array(prediction, (3,))
         os.remove(self.image_path)
-        predict = [self.categories[i] for i in range(0, len(self.categories)) if prediction[i] == 1]
+        predict = [self.categories[i] for i in range(0, len(self.categories)) if prediction[i] >= 0.0]
         return predict
