@@ -105,7 +105,7 @@ class MySKLearnRBFRawWrapper:
         self.lib.destroy_rbf_model(self.model)
 
 class MySKLearnLinearModelWrapper:
-    def __init__(self, array_size: int, iteration_count: int = 1000, alpha=0.01,classification: bool = True):
+    def __init__(self, array_size: int, iteration_count: int = 1000, alpha=0.01, classification: bool = True):
         self.lib = get_lib()
         self.lib.create_model.argtypes = [c_int]
         self.lib.create_model.restype = POINTER(c_float)
@@ -142,24 +142,28 @@ class MySKLearnLinearModelWrapper:
         else:
             self.lib.train_regression_linear_model(self.model, inputs_native, outputs_native, self.model_size, len(X), len(Y), inputs_dim, outputs_dim)
 
-        def predict(X, input_dim):
-            if not hasattr(X, 'shape'):
-                X = np.array(X, dtype="object")
-            results = []
-            sample_inputs_type = c_float * input_dim
-            self.lib.predict_linear_model_classification.argtypes = [type(self.model), sample_inputs_type, c_int, c_int]
-            self.lib.predict_linear_model_classification.restype = c_float
-            self.lib.predict_linear_model_regression.argtypes = [type(self.model), sample_inputs_type, c_int, c_int]
-            self.lib.predict_linear_model_regression.restype = c_float
-            if self.classification:
-                for x in X:
-                    prediction = self.lib.predict_linear_model_classification(self.model, sample_inputs_type(*x), self.model_size, input_dim)
-                    results.append(prediction)
-            else:
-                for x in X:
-                    prediction = self.lib.predict_linear_model_regression(self.model, sample_inputs_type(*x), self.model_size, input_dim)
-                    results.append(prediction)
-            return np.array(results)
+    def predict(self, X, input_dim):
+        if not hasattr(X, 'shape'):
+            X = np.array(X, dtype="object")
+        results = []
+        sample_inputs_type = c_float * input_dim
+        self.lib.predict_linear_model_classification.argtypes = [type(self.model), sample_inputs_type, c_int, c_int]
+        self.lib.predict_linear_model_classification.restype = c_float
+        self.lib.predict_linear_model_regression.argtypes = [type(self.model), sample_inputs_type, c_int, c_int]
+        self.lib.predict_linear_model_regression.restype = c_float
+        if self.classification:
+            for x in X:
+                prediction = self.lib.predict_linear_model_classification(self.model, sample_inputs_type(*x), self.model_size, input_dim)
+                results.append(prediction)
+        else:
+            for x in X:
+                prediction = self.lib.predict_linear_model_regression(self.model, sample_inputs_type(*x), self.model_size, input_dim)
+                results.append(prediction)
+        return np.array(results)
+    def save(self, filename):
+        self.lib.save_linear_model.argtypes = [type(self.model), c_int, c_char_p]
+        self.lib.save_linear_model.restype = None
+        self.lib.save_linear_model(self.model, self.model_size, filename.encode("utf-8"))
 
     def destroy(self):
         self.lib.destroy_array.argtypes = [type(self.model), c_int]

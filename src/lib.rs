@@ -1060,7 +1060,7 @@ pub extern "C" fn save_linear_model(model: *mut f32, model_len: i32, filename: *
     };
     let mut file = File::create(filename).unwrap();
     serde_json::to_writer(&file, &model_struct);
-    destroy_linear_model(model_struct);
+    //destroy_linear_model(model_struct);
 }
 #[no_mangle]
 pub extern "C" fn save_rbf_model(model: *mut RBF, filename: *const c_char){

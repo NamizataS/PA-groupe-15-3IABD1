@@ -63,9 +63,9 @@ if __name__ == "__main__":
     outputs_len = len(y_train_horror)
     output_dim = 1
     print(f"this is the len of y_train: {len(y_train)}")
-    wrapped_model_action = MySKLearnRBFRawWrapper(50, x_train, sample_inputs_len, 1.1, iteration_count=len(x_train))
-    wrapped_model_comedy = MySKLearnRBFRawWrapper(50, x_train, sample_inputs_len, 1.1, iteration_count=len(x_train))
-    wrapped_model_horror = MySKLearnRBFRawWrapper(50, x_train, sample_inputs_len, 1.1, iteration_count=len(x_train))
+    wrapped_model_action = MySKLearnRBFRawWrapper(50, x_train, sample_inputs_len, 1.1, alpha=0.001, iteration_count=len(x_train))
+    wrapped_model_comedy = MySKLearnRBFRawWrapper(50, x_train, sample_inputs_len, 1.1, alpha=0.001, iteration_count=len(x_train))
+    wrapped_model_horror = MySKLearnRBFRawWrapper(50, x_train, sample_inputs_len, 1.1, alpha=0.001, iteration_count=len(x_train))
     losses = []
     val_losses = []
     accs = []
@@ -86,7 +86,6 @@ if __name__ == "__main__":
             predicted_y_train.append([predicted_y_train_horror[i], predicted_y_train_action[i], predicted_y_train_comedy[i]])
 
         predicted_y_test_action = wrapped_model_action.predict(x_test)
-
         predicted_y_test_comedy = wrapped_model_comedy.predict(x_test)
         predicted_y_test_horror = wrapped_model_horror.predict(x_test)
         predicted_y_test = []
@@ -110,7 +109,7 @@ if __name__ == "__main__":
     plt.plot(losses)
     plt.plot(val_losses)
     plt.legend(['loss', 'val_loss'], loc='upper left')
-    plt.title('Evolution of loss(MSE) RBF image resized (8,8) and only horror and comedy')
+    plt.title('Evolution of loss(MSE) RBF image resized (8,8) and alpha=0.001')
     plt.xlabel('epochs')
     plt.ylabel(f'mean squared error')
     plt.savefig(f'test_dataset/fig/fig_RBF_loss_{dt_string}.png')
@@ -119,7 +118,7 @@ if __name__ == "__main__":
     plt.plot(accs)
     plt.plot(val_accs)
     plt.legend(['acc', 'val_acc'], loc='upper left')
-    plt.title('Evolution of accuracy RBF image resized (8,8) and only horror and comedy')
+    plt.title('Evolution of accuracy RBF image resized (8,8) and alpha=0.001')
     plt.xlabel('epochs')
     plt.ylabel(f'accuracy')
     plt.savefig(f'test_dataset/fig/fig_RBF_accuracy_{dt_string}.png')
@@ -127,12 +126,12 @@ if __name__ == "__main__":
 
 
     #save
-    #wrapped_model_action.save(f"test_dataset/RBF/model_rbf_action_dataset_{dt_string}.json")
+    wrapped_model_action.save(f"test_dataset/RBF/model_rbf_action_dataset_{dt_string}.json")
     wrapped_model_comedy.save(f"test_dataset/RBF/model_rbf_comedy_dataset_{dt_string}.json")
     wrapped_model_horror.save(f"test_dataset/RBF/model_rbf_horror_dataset_{dt_string}.json")
     
     #destroy
-    #wrapped_model_action.destroy()
+    wrapped_model_action.destroy()
     wrapped_model_comedy.destroy()
     wrapped_model_horror.destroy()
 
